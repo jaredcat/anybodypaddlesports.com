@@ -15,11 +15,22 @@ export interface Props {
 }
 
 const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVideo, backgroundVideoLocal, backgroundImage } = Astro.props;
+
+// Helper function to ensure proper path with base URL
+const getAssetPath = (path: string | undefined) => {
+  if (!path) return path;
+  if (path.startsWith('http') || path.startsWith('//')) return path; // External URLs
+  if (path.startsWith('/')) return `${import.meta.env.BASE_URL}${path.slice(1)}`; // Remove leading slash and add base URL
+  return path;
+};
+
+const processedBackgroundImage = getAssetPath(backgroundImage);
+const processedBackgroundVideoLocal = getAssetPath(backgroundVideoLocal);
 ---
 
 <section class="relative bg-gradient-to-br from-primary-600 to-accent-600 text-white overflow-hidden flex items-center">
   <!-- Background Video -->
-  {backgroundVideoLocal && (
+  {processedBackgroundVideoLocal && (
     <div class="absolute inset-0 w-full h-full overflow-hidden z-0">
       <video
         class="absolute video-background"
@@ -29,15 +40,15 @@ const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVide
         playsinline
         preload="auto"
       >
-        <source src={`${backgroundVideoLocal}-720p.mp4`} type="video/mp4" media="(max-width: 768px)" />
-        <source src={`${backgroundVideoLocal}-optimized.mp4`} type="video/mp4" />
-        {/* <source src={`${backgroundVideoLocal}.mp4`} type="video/mp4" /> */}
+        <source src={`${processedBackgroundVideoLocal}-720p.mp4`} type="video/mp4" media="(max-width: 768px)" />
+        <source src={`${processedBackgroundVideoLocal}-optimized.mp4`} type="video/mp4" />
+        {/* <source src={`${processedBackgroundVideoLocal}.mp4`} type="video/mp4" /> */}
       </video>
     </div>
   )}
 
   <!-- Background Video (External/Iframe) -->
-  {backgroundVideo && !backgroundVideoLocal && (
+  {backgroundVideo && !processedBackgroundVideoLocal && (
     <div class="absolute inset-0 w-full h-full overflow-hidden z-0">
       <iframe
         src={backgroundVideo}
@@ -51,14 +62,14 @@ const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVide
   )}
 
   <!-- Background Image -->
-  {backgroundImage && !backgroundVideo && (
+  {processedBackgroundImage && !backgroundVideo && (
     <div
       class="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
-      style={`background-image: url(${backgroundImage})`}
+      style={`background-image: url(${processedBackgroundImage})`}
     ></div>
   )}
 
-  {backgroundImage && (
+  {processedBackgroundImage && (
     // Color overlay with screen blend mode
   <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-accent-600 opacity-90 z-0"></div>
   )}
