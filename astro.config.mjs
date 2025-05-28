@@ -49,11 +49,12 @@ export default defineConfig({
     }),
   ],
 
-  // Use Vercel adapter for hybrid rendering
+  // Use Vercel adapter for pages that need server-side rendering
+  // (pages with prerender = false, like /book)
   adapter: vercel(),
 
-  // Enable hybrid mode: static by default, SSR for specific pages
-  output: 'hybrid',
+  // Astro 5.0: Static by default, with automatic SSR for pages using prerender = false
+  // No need to specify output mode - Astro handles this automatically
 
   // Site configuration (will be your Vercel domain)
   site: 'https://anybodypaddlesports.vercel.app', // Update this with your actual Vercel domain
