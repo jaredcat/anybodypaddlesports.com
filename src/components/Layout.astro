@@ -1,7 +1,12 @@
 ---
+import videoPoster from '@/assets/images/Anybody-Paddlesports-Sample-Video-poster.png';
+import logo from '@/assets/images/Logo-Horizontal-Light-768x213.png';
+import tualatinRiver from '@/assets/images/Tualatin-RIver-Tualatin-Community-Park.jpg';
 import '@/styles/global.css';
+import { getImage } from 'astro:assets';
 import Footer from './Footer.astro';
 import Header from './Header.astro';
+import SpeedInsights from './SpeedInsights.astro';
 
 export interface Props {
   title: string;
@@ -11,6 +16,32 @@ export interface Props {
 
 const { title, description, image } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Pre-optimize critical images for preloading
+const optimizedLogo = await getImage({
+  src: logo,
+  format: 'webp',
+  width: 768,
+  height: 213,
+});
+let optimizedTualatin, optimizedPoster;
+
+if (Astro.url.pathname === '/') {
+  optimizedTualatin = await getImage({
+    src: tualatinRiver,
+    format: 'webp',
+    width: 800,
+    height: 320,
+    quality: 85,
+  });
+  optimizedPoster = await getImage({
+    src: videoPoster,
+    format: 'webp',
+    width: 1920,
+    height: 1080,
+    quality: 80,
+  });
+}
 ---
 
 <!doctype html>
@@ -52,8 +83,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="dns-prefetch" href="https://www.google.com" />
     <link rel="dns-prefetch" href="https://maps.googleapis.com" />
 
-    <!-- Preload critical images -->
-    <link rel="preload" as="image" href="/Logo-Horizontal-Light-768x213.png" />
+    <!-- Preload critical optimized images -->
+    <link rel="preload" as="image" href={optimizedLogo.src} />
     {
       Astro.url.pathname === '/' && (
         <>
@@ -71,16 +102,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             type="video/mp4"
             media="(min-width: 769px)"
           />
-          <link
-            rel="preload"
-            as="image"
-            href="/Tualatin-RIver-Tualatin-Community-Park.jpg"
-          />
-          <link
-            rel="preload"
-            as="image"
-            href="/Anybody-Paddlesports-Sample-Video-poster.png"
-          />
+          <link rel="preload" as="image" href={optimizedTualatin?.src} />
+          <link rel="preload" as="image" href={optimizedPoster?.src} />
         </>
       )
     }
@@ -107,5 +130,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     <Footer />
+    <SpeedInsights />
   </body>
 </html>
