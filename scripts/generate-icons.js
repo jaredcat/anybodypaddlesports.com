@@ -20,8 +20,6 @@ const iconList = [
   { name: 'check', type: 'solid' },
   { name: 'shield-check', type: 'outline' },
   { name: 'bars-3', type: 'outline' }, // menu
-
-  // Additional icons for remaining pages
   { name: 'bolt', type: 'outline' }, // flexibility/lightning
   { name: 'face-smile', type: 'outline' }, // get wet/happy face
   { name: 'heart', type: 'outline' }, // CPR
@@ -30,6 +28,8 @@ const iconList = [
   { name: 'sun', type: 'outline' }, // rescue from bushes
   { name: 'link', type: 'outline' }, // tow paddlers
   { name: 'arrow-up', type: 'outline' }, // assist back onto board
+  { name: 'map-pin', type: 'outline' },
+  { name: 'phone', type: 'outline' },
 ];
 
 // Custom social media icons (not from Heroicons)

@@ -9,16 +9,35 @@ export interface Props {
   ctaText?: string;
   ctaLink?: string;
   iconName?: IconName; // Optional SVG icon name
-  backgroundVideo?: string; // Optional Vimeo video URL or embed code
+  backgroundVideo?: string; // Optional Vimeo video URL or embed code (iframe)
+  backgroundVideoLocal?: string; // Optional local video file path
   backgroundImage?: string; // Optional background image URL
 }
 
-const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVideo, backgroundImage } = Astro.props;
+const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVideo, backgroundVideoLocal, backgroundImage } = Astro.props;
 ---
 
-<section class="relative bg-gradient-to-br from-primary-600 to-accent-600 text-white overflow-hidden min-h-screen flex items-center">
+<section class="relative bg-gradient-to-br from-primary-600 to-accent-600 text-white overflow-hidden flex items-center">
   <!-- Background Video -->
-  {backgroundVideo && (
+  {backgroundVideoLocal && (
+    <div class="absolute inset-0 w-full h-full overflow-hidden z-0">
+      <video
+        class="absolute video-background"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+      >
+        <source src={`${backgroundVideoLocal}-720p.mp4`} type="video/mp4" media="(max-width: 768px)" />
+        <source src={`${backgroundVideoLocal}-optimized.mp4`} type="video/mp4" />
+        {/* <source src={`${backgroundVideoLocal}.mp4`} type="video/mp4" /> */}
+      </video>
+    </div>
+  )}
+
+  <!-- Background Video (External/Iframe) -->
+  {backgroundVideo && !backgroundVideoLocal && (
     <div class="absolute inset-0 w-full h-full overflow-hidden z-0">
       <iframe
         src={backgroundVideo}
@@ -39,8 +58,10 @@ const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVide
     ></div>
   )}
 
-  <!-- Color overlay with screen blend mode -->
-  <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-accent-600 mix-blend-screen opacity-80 z-10"></div>
+  {backgroundImage && (
+    // Color overlay with screen blend mode
+  <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-accent-600 opacity-90 z-0"></div>
+  )}
 
   <!-- Wave border at bottom -->
   <div class="wave-border">
@@ -51,7 +72,7 @@ const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVide
     </svg>
   </div>
 
-  <div class="relative container-custom py-12 lg:py-16 z-20 w-full">
+  <div class="relative container-custom py-12 pb-16 lg:py-16 lg:pb-24 z-20 w-full">
     {iconName ? (
       <!-- Two-column layout with icon on right -->
       <div class="grid lg:grid-cols-2 gap-12 items-center">
@@ -139,5 +160,6 @@ const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVide
     min-height: 100vh;
     min-width: 177.78vh; /* 16:9 aspect ratio */
     transform: translate(-50%, -50%);
+    object-fit: cover; /* For HTML5 video elements */
   }
 </style>
