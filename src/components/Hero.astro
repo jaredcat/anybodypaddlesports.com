@@ -49,7 +49,9 @@ if (backgroundImage) {
         muted
         loop
         playsinline
-        preload="auto"
+        preload="metadata"
+        disablepictureinpicture
+        webkit-playsinline
       >
         <source src={`${backgroundVideoLocal}-720p.mp4`} type="video/mp4" media="(max-width: 768px)" />
         <source src={`${backgroundVideoLocal}-1080p.mp4`} type="video/mp4" />

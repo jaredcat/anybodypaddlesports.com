@@ -250,35 +250,74 @@ const rentalLocations = activeLocations
     </div>
   </section>
 
-  <!-- Cal.com embed script with proper loading -->
+  <!-- Cal.com embed script with optimized loading -->
   <script>
-    // Initialize Cal.com embed when DOM is ready
-    document.addEventListener('DOMContentLoaded', function () {
-      // Load Cal.com embed script
-      const script = document.createElement('script');
-      script.src = 'https://app.cal.com/embed/embed.js';
-      script.async = true;
-      script.onload = function () {
-        // Script loaded successfully
-        console.log('Cal.com embed script loaded');
+    // Optimized Cal.com loading - only load when user interacts with booking buttons
+    let calScriptLoaded = false;
+    let calScriptLoading = false;
 
-        // Wait a bit for Cal to be available
-        setTimeout(() => {
-          if (typeof (window as any).Cal !== 'undefined') {
-            console.log('Cal.com API is ready');
-            // Trigger a custom event to let components know Cal is ready
-            window.dispatchEvent(new CustomEvent('cal-ready'));
-          } else {
-            console.warn('Cal.com API not available after script load');
-          }
-        }, 100);
-      };
-      script.onerror = function () {
-        console.warn('Failed to load Cal.com embed script');
-        // Still allow fallback behavior
-        window.dispatchEvent(new CustomEvent('cal-error'));
-      };
-      document.head.appendChild(script);
+    function loadCalScript(): Promise<void> {
+      if (calScriptLoaded || calScriptLoading) return Promise.resolve();
+
+      calScriptLoading = true;
+
+      return new Promise<void>((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://app.cal.com/embed/embed.js';
+        script.async = true;
+        script.onload = function () {
+          calScriptLoaded = true;
+          calScriptLoading = false;
+          console.log('Cal.com embed script loaded');
+
+          setTimeout(() => {
+            if (typeof (window as any).Cal !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('cal-ready'));
+              resolve();
+            } else {
+              console.warn('Cal.com API not available after script load');
+              reject();
+            }
+          }, 100);
+        };
+        script.onerror = function () {
+          calScriptLoading = false;
+          console.warn('Failed to load Cal.com embed script');
+          window.dispatchEvent(new CustomEvent('cal-error'));
+          reject();
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    // Load Cal.com script on first user interaction with booking buttons
+    document.addEventListener('DOMContentLoaded', function () {
+      const bookingButtons = document.querySelectorAll(
+        '.cal-booking-btn, [href="/book"]',
+      );
+
+      // Use intersection observer to preload when booking section is visible
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                loadCalScript();
+                observer.disconnect();
+              }
+            });
+          },
+          { rootMargin: '50px' },
+        );
+
+        bookingButtons.forEach((btn) => observer.observe(btn));
+      }
+
+      // Fallback: load on first click
+      bookingButtons.forEach((btn) => {
+        btn.addEventListener('mouseenter', loadCalScript, { once: true });
+        btn.addEventListener('focus', loadCalScript, { once: true });
+      });
     });
   </script>
 </Layout>

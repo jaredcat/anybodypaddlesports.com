@@ -9,19 +9,23 @@
   --e-global-color-accent: #61ce70;
   --e-global-color-header: #1d6baa;
   --e-global-color-header-text: #ffffff;
-  --e-global-typography-primary-font-family: 'Roboto';
+  --e-global-typography-primary-font-family: 'Poppins';
   --e-global-typography-primary-font-weight: 600;
-  --e-global-typography-secondary-font-family: 'Roboto Slab';
+  --e-global-typography-secondary-font-family: 'Poppins';
   --e-global-typography-secondary-font-weight: 400;
-  --e-global-typography-text-font-family: 'Roboto';
+  --e-global-typography-text-font-family: 'Poppins';
   --e-global-typography-text-font-weight: 400;
-  --e-global-typography-accent-font-family: 'Roboto';
-  --e-global-typography-accent-font-weight: 500;
+  --e-global-typography-accent-font-family: 'Poppins';
+  --e-global-typography-accent-font-weight: 600;
 }
 
 @layer base {
   html {
-    font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+    font-family:
+      'Poppins',
+      system-ui,
+      -apple-system,
+      sans-serif;
     scroll-behavior: smooth;
   }
 
