@@ -39,58 +39,6 @@ try {
   console.warn('Could not fetch event types for booking page:', error);
 }
 
-// Fallback static event types (for development or if API fails)
-const fallbackEventTypes = [
-  // Tours
-  {
-    title: 'Tualatin Community Park - 2-Hour Guided Tour',
-    slug: 'tualatin-2hr-tour',
-    isRental: false,
-  },
-  {
-    title: 'Tualatin Community Park - Full Day Tour',
-    slug: 'tualatin-full-day',
-    isRental: false,
-  },
-  {
-    title: 'Silverton Reservoir - 2-Hour Guided Tour',
-    slug: 'silverton-2hr-tour',
-    isRental: false,
-  },
-  {
-    title: 'Silverton Reservoir - Full Day Tour',
-    slug: 'silverton-full-day',
-    isRental: false,
-  },
-  {
-    title: 'North Fork Estacada Reservoir - 2-Hour Guided Tour',
-    slug: 'estacada-2hr-tour',
-    isRental: false,
-  },
-  {
-    title: 'North Fork Estacada Reservoir - Full Day Tour',
-    slug: 'estacada-full-day',
-    isRental: false,
-  },
-
-  // Rentals
-  {
-    title: 'Tualatin Community Park - Equipment Rental',
-    slug: 'tualatin-rental',
-    isRental: true,
-  },
-  {
-    title: 'Silverton Reservoir - Equipment Rental',
-    slug: 'silverton-rental',
-    isRental: true,
-  },
-  {
-    title: 'North Fork Estacada Reservoir - Equipment Rental',
-    slug: 'estacada-rental',
-    isRental: true,
-  },
-];
-
 // Use Cal.com data if available, otherwise fallback
 const eventTypesToUse =
   availableEventTypes.length > 0
@@ -99,7 +47,7 @@ const eventTypesToUse =
         slug: et.slug,
         isRental: et.title.toLowerCase().includes('rental'),
       }))
-    : fallbackEventTypes;
+    : [];
 
 // Group event types by location and type
 const tourEventsByLocation = new Map();
@@ -313,9 +261,22 @@ const rentalLocations = activeLocations
       script.onload = function () {
         // Script loaded successfully
         console.log('Cal.com embed script loaded');
+
+        // Wait a bit for Cal to be available
+        setTimeout(() => {
+          if (typeof (window as any).Cal !== 'undefined') {
+            console.log('Cal.com API is ready');
+            // Trigger a custom event to let components know Cal is ready
+            window.dispatchEvent(new CustomEvent('cal-ready'));
+          } else {
+            console.warn('Cal.com API not available after script load');
+          }
+        }, 100);
       };
       script.onerror = function () {
         console.warn('Failed to load Cal.com embed script');
+        // Still allow fallback behavior
+        window.dispatchEvent(new CustomEvent('cal-error'));
       };
       document.head.appendChild(script);
     });
