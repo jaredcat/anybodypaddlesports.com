@@ -17,14 +17,77 @@ const { location, eventTypes } = Astro.props;
 <div class="border-2 border-gray-200 rounded-lg p-4">
   <h4 class="font-semibold mb-2">{location.name}</h4>
   <div class="space-y-2">
-    {eventTypes.map(event => (
-      <button
-        class={`w-full ${event.type === 'primary' ? 'btn-primary' : 'btn-secondary'}`}
-        data-cal-link={event.calLink}
-        data-cal-config='{"layout":"month_view"}'
-      >
-        {event.name}
-      </button>
-    ))}
+    {
+      eventTypes.map((event) => (
+        <button
+          class={`w-full ${event.type === 'primary' ? 'btn-primary' : 'btn-secondary'} cal-booking-btn`}
+          data-cal-link={event.calLink}
+          data-cal-config='{"layout":"month_view"}'
+          type="button">
+          {event.name}
+        </button>
+      ))
+    }
   </div>
 </div>
+
+<script>
+  // Handle Cal.com booking button clicks
+  document.addEventListener('DOMContentLoaded', function () {
+    let calReady = false;
+
+    // Check if Cal is already available
+    if (typeof (window as any).Cal !== 'undefined') {
+      calReady = true;
+    }
+
+    // Listen for Cal ready event
+    window.addEventListener('cal-ready', function () {
+      calReady = true;
+      console.log('Cal.com is now ready for booking buttons');
+    });
+
+    // Initialize booking buttons
+    function initializeCalButtons() {
+      const buttons = document.querySelectorAll('.cal-booking-btn');
+
+      buttons.forEach((button) => {
+        // Remove any existing listeners to prevent duplicates
+        const newButton = button.cloneNode(true) as HTMLButtonElement;
+        button.parentNode?.replaceChild(newButton, button);
+
+        newButton.addEventListener('click', function (e: Event) {
+          e.preventDefault();
+
+          const target = e.target as HTMLButtonElement;
+          const calLink = target.getAttribute('data-cal-link');
+          const calConfig = target.getAttribute('data-cal-config');
+
+          if (calLink) {
+            console.log('Booking button clicked:', calLink);
+
+            // Check if Cal.com is available
+            if (calReady && typeof (window as any).Cal !== 'undefined') {
+              console.log('Opening Cal.com modal');
+              // Use Cal.com embed API
+              (window as any).Cal('openModal', {
+                calLink: calLink,
+                config: calConfig ? JSON.parse(calConfig) : {},
+              });
+            } else {
+              // Fallback: open Cal.com in new tab
+              console.log('Cal.com embed not available, opening in new tab');
+              window.open(`https://cal.com/${calLink}`, '_blank');
+            }
+          }
+        });
+      });
+    }
+
+    // Initialize immediately
+    initializeCalButtons();
+
+    // Re-initialize when Cal becomes ready
+    window.addEventListener('cal-ready', initializeCalButtons);
+  });
+</script>
