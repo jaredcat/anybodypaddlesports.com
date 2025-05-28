@@ -29,19 +29,70 @@
     scroll-behavior: smooth;
   }
 
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   body {
     @apply antialiased;
     color: var(--e-global-color-text);
+  }
+
+  /* Enhanced focus styles for better accessibility - but not for elements that already have focus styles */
+  *:focus:not(.btn-primary):not(.btn-secondary):not(
+      [class*='rounded-full']
+    ):not([class*='focus:ring']) {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* High contrast mode support */
+  @media (forced-colors: active) {
+    .btn-primary,
+    .btn-secondary {
+      border: 1px solid ButtonText;
+    }
+  }
+
+  /* Enhanced text contrast for better readability - but only for content areas, not hero/footer */
+  main p:not(.text-white):not(.opacity-90):not([class*='text-']),
+  main li:not(.text-white):not(.opacity-90):not([class*='text-']),
+  main span:not(.text-white):not(.opacity-90):not([class*='text-']) {
+    color: #374151; /* Darker gray for better contrast */
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl;
+    @apply bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
 
   .btn-secondary {
-    @apply border-2 border-primary-700 text-primary-700 hover:bg-primary-700 hover:text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200;
+    @apply border-2 border-primary-700 text-primary-700 hover:bg-primary-700 hover:text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
 
   .section-padding {
@@ -50,5 +101,41 @@
 
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Improved link styles for accessibility - but preserve existing button and icon styles */
+  a:not(.btn-primary):not(.btn-secondary):not([class*='rounded-full']):not(
+      [class*='focus:ring']
+    ) {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-sm;
+  }
+
+  /* Ensure sufficient color contrast for text - but preserve existing styling */
+  .text-gray-700:not(.text-white) {
+    @apply text-gray-800;
+  }
+
+  .text-gray-600:not(.text-white) {
+    @apply text-gray-700;
+  }
+
+  /* Improved form styles for better accessibility */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    @apply ring-2 ring-primary-500 border-transparent outline-none;
+  }
+
+  /* Better button hover and focus states - but only for elements without existing focus styles */
+  button:focus:not(.btn-primary):not(.btn-secondary):not([class*='focus:ring']),
+  [role='button']:focus:not(.btn-primary):not(.btn-secondary):not(
+      [class*='focus:ring']
+    ) {
+    @apply ring-2 ring-primary-500 ring-offset-2 outline-none;
+  }
+
+  /* Ensure skip links are accessible */
+  .skip-link:focus {
+    @apply z-50 relative;
   }
 }

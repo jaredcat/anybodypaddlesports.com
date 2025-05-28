@@ -1,14 +1,25 @@
 ---
+// Enable static generation for this page
+export const prerender = true;
+
 import heroBackground from '@/assets/images/G0062626-scaled.jpg';
+import CallToAction from '@/components/CallToAction.astro';
 import Hero from '@/components/Hero.astro';
 import Icon from '@/components/Icon.astro';
 import Layout from '@/components/Layout.astro';
 import { SITE_CONFIG } from '@/config/site';
+
+// Breadcrumbs for SEO
+// const breadcrumbs = [
+//   { name: 'Home', url: '/' },
+//   { name: 'Contact Us', url: '/contact' },
+// ];
 ---
 
 <Layout
   title={`Contact Us - ${SITE_CONFIG.name}`}
-  description="Get in touch with AnyBody Paddlesports for paddle board tours, equipment rentals, and questions about our services.">
+  description="Get in touch with AnyBody Paddlesports for paddle board tours, equipment rentals, and questions about our services."
+  keywords="contact paddleboard tours, AnyBody Paddlesports contact, paddle board rental inquiry, SUP tour questions, California paddleboard contact">
   <!-- Hero Section -->
   <Hero
     title="Contact Us"
@@ -18,23 +29,33 @@ import { SITE_CONFIG } from '@/config/site';
   />
 
   <!-- Contact Information -->
-  <section class="section-padding">
+  <section class="section-padding" aria-labelledby="contact-info">
     <div class="container-custom">
       <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
         <!-- Contact Details -->
         <div>
-          <h2 class="text-3xl font-bold text-gray-900 mb-8">Get in Touch</h2>
+          <h2 id="contact-info" class="text-3xl font-bold text-gray-900 mb-8">
+            Get in Touch
+          </h2>
 
           <div class="space-y-6">
             <!-- Phone -->
             <div class="flex items-start space-x-4">
               <div
-                class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0"
+                aria-hidden="true">
                 <Icon name="phone" class="text-white" />
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-1">Phone</h3>
-                <p class="text-gray-700">{SITE_CONFIG.contact.phone}</p>
+                <p class="text-gray-700">
+                  <a
+                    href={`tel:${SITE_CONFIG.contact.phone.replace(/\D/g, '')}`}
+                    class="hover:text-primary-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded"
+                    aria-label={`Call us at ${SITE_CONFIG.contact.phone}`}>
+                    {SITE_CONFIG.contact.phone}
+                  </a>
+                </p>
                 <p class="text-sm text-gray-600">
                   Call or text for quick responses
                 </p>
@@ -44,12 +65,20 @@ import { SITE_CONFIG } from '@/config/site';
             <!-- Email -->
             <div class="flex items-start space-x-4">
               <div
-                class="w-12 h-12 bg-accent-600 rounded-full flex items-center justify-center flex-shrink-0">
+                class="w-12 h-12 bg-accent-600 rounded-full flex items-center justify-center flex-shrink-0"
+                aria-hidden="true">
                 <Icon name="envelope" class="text-white" />
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-1">Email</h3>
-                <p class="text-gray-700">{SITE_CONFIG.contact.email}</p>
+                <p class="text-gray-700">
+                  <a
+                    href={`mailto:${SITE_CONFIG.contact.email}`}
+                    class="hover:text-primary-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded"
+                    aria-label={`Email us at ${SITE_CONFIG.contact.email}`}>
+                    {SITE_CONFIG.contact.email}
+                  </a>
+                </p>
                 <p class="text-sm text-gray-600">
                   We'll respond within 24 hours
                 </p>
@@ -59,7 +88,8 @@ import { SITE_CONFIG } from '@/config/site';
             <!-- Location -->
             <div class="flex items-start space-x-4">
               <div
-                class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0"
+                aria-hidden="true">
                 <Icon name="map-pin" class="text-white" />
               </div>
               <div>
@@ -77,14 +107,15 @@ import { SITE_CONFIG } from '@/config/site';
           <!-- Social Media -->
           <div class="mt-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Follow Us</h3>
-            <div class="flex space-x-4">
+            <div class="flex space-x-4" role="list">
               {
                 SITE_CONFIG.social.facebook && (
                   <a
                     href={SITE_CONFIG.social.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors">
+                    class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-label="Follow us on Facebook">
                     <Icon name="facebook" size="sm" />
                   </a>
                 )
@@ -95,7 +126,8 @@ import { SITE_CONFIG } from '@/config/site';
                     href={SITE_CONFIG.social.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center text-white hover:bg-pink-700 transition-colors">
+                    class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center text-white hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+                    aria-label="Follow us on Instagram">
                     <Icon name="instagram" size="sm" />
                   </a>
                 )
@@ -106,7 +138,8 @@ import { SITE_CONFIG } from '@/config/site';
                     href={SITE_CONFIG.social.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:bg-red-700 transition-colors">
+                    class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    aria-label="Follow us on YouTube">
                     <Icon name="youtube" size="sm" />
                   </a>
                 )
@@ -121,35 +154,43 @@ import { SITE_CONFIG } from '@/config/site';
             Send us a Message
           </h2>
 
-          <form class="space-y-6">
+          <form class="space-y-6" aria-label="Contact form">
             <div class="grid md:grid-cols-2 gap-4">
               <div>
                 <label
                   for="firstName"
                   class="block text-sm font-medium text-gray-700 mb-2"
-                  >First Name</label
+                  >First Name *</label
                 >
                 <input
                   type="text"
                   id="firstName"
                   name="firstName"
                   required
+                  aria-required="true"
+                  aria-describedby="firstName-error"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
+                <div id="firstName-error" class="sr-only" aria-live="polite">
+                </div>
               </div>
               <div>
                 <label
                   for="lastName"
                   class="block text-sm font-medium text-gray-700 mb-2"
-                  >Last Name</label
+                  >Last Name *</label
                 >
                 <input
                   type="text"
                   id="lastName"
                   name="lastName"
                   required
+                  aria-required="true"
+                  aria-describedby="lastName-error"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
+                <div id="lastName-error" class="sr-only" aria-live="polite">
+                </div>
               </div>
             </div>
 
@@ -157,15 +198,21 @@ import { SITE_CONFIG } from '@/config/site';
               <label
                 for="email"
                 class="block text-sm font-medium text-gray-700 mb-2"
-                >Email</label
+                >Email *</label
               >
               <input
                 type="email"
                 id="email"
                 name="email"
                 required
+                aria-required="true"
+                aria-describedby="email-error email-help"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
+              <div id="email-help" class="text-sm text-gray-600 mt-1">
+                We'll never share your email address
+              </div>
+              <div id="email-error" class="sr-only" aria-live="polite"></div>
             </div>
 
             <div>
@@ -178,20 +225,26 @@ import { SITE_CONFIG } from '@/config/site';
                 type="tel"
                 id="phone"
                 name="phone"
+                aria-describedby="phone-help"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
+              <div id="phone-help" class="text-sm text-gray-600 mt-1">
+                Include your phone number for faster responses
+              </div>
             </div>
 
             <div>
               <label
                 for="subject"
                 class="block text-sm font-medium text-gray-700 mb-2"
-                >Subject</label
+                >Subject *</label
               >
               <select
                 id="subject"
                 name="subject"
                 required
+                aria-required="true"
+                aria-describedby="subject-error"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 <option value="">Select a subject</option>
                 <option value="booking">Booking Inquiry</option>
@@ -226,8 +279,8 @@ import { SITE_CONFIG } from '@/config/site';
           </form>
 
           <p class="text-sm text-gray-600 mt-4">
-            We typically respond within 24 hours. For immediate assistance,
-            please call us at 503-850-7255.
+            We typically respond within 48 hours. For immediate assistance,
+            please call us at {SITE_CONFIG.contact.phone}.
           </p>
         </div>
       </div>
@@ -264,20 +317,9 @@ import { SITE_CONFIG } from '@/config/site';
   </section>
 
   <!-- Quick Booking CTA -->
-  <section class="section-padding bg-primary-600">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
-        Ready to Book?
-      </h2>
-      <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
-        Skip the wait and book your paddle boarding adventure directly online
-      </p>
-      <a
-        href="/book"
-        class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
-        data-astro-prefetch="viewport">
-        Book Your Adventure
-      </a>
-    </div>
-  </section>
+  <CallToAction
+    title="Ready to Book?"
+    description="Skip the wait and book your paddle boarding adventure directly online"
+    showContactButton={false}
+  />
 </Layout>

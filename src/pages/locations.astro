@@ -1,16 +1,27 @@
 ---
+// Enable static generation for this page
+export const prerender = true;
+
 import silvertonReservoir from '@/assets/images/G0062626-scaled.jpg';
 import estacadaImage from '@/assets/images/IMG_20200907_095633.jpg';
 import tualatinRiver from '@/assets/images/Tualatin-RIver-Tualatin-Community-Park.jpg';
+import CallToAction from '@/components/CallToAction.astro';
 import Hero from '@/components/Hero.astro';
 import Layout from '@/components/Layout.astro';
 import { SITE_CONFIG } from '@/config/site';
 import { Image } from 'astro:assets';
+
+// Breadcrumbs for SEO
+// const breadcrumbs = [
+//   { name: 'Home', url: '/' },
+//   { name: 'Locations', url: '/locations' },
+// ];
 ---
 
 <Layout
-  title={`Locations - ${SITE_CONFIG.name}`}
-  description="Discover our paddle boarding locations including Tualatin Community Park, Silverton Reservoir, and North Fork Estacada Reservoir. Interactive map and detailed location information.">
+  title={`Paddle Board Locations - ${SITE_CONFIG.name}`}
+  description="Discover our paddle boarding locations including Tualatin Community Park, Silverton Reservoir, and North Fork Estacada Reservoir. Interactive map and detailed location information."
+  keywords="paddle board locations, SUP spots California, Tualatin River paddleboarding, Silverton Reservoir SUP, Estacada paddle boarding, Oregon water sports locations">
   <!-- Hero Section -->
   <Hero
     title="Places To Go"
@@ -20,10 +31,12 @@ import { Image } from 'astro:assets';
   />
 
   <!-- Interactive Map Section -->
-  <section class="section-padding bg-gray-50">
+  <section class="section-padding bg-gray-50" aria-labelledby="interactive-map">
     <div class="container-custom">
       <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h2
+          id="interactive-map"
+          class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Interactive Map
         </h2>
         <p class="text-xl text-gray-700 max-w-2xl mx-auto">
@@ -43,7 +56,9 @@ import { Image } from 'astro:assets';
               allowfullscreen=""
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              class="rounded"></iframe>
+              class="rounded"
+              title="Interactive map showing AnyBody Paddlesports locations"
+            ></iframe>
           </div>
         </div>
       </div>
@@ -51,10 +66,12 @@ import { Image } from 'astro:assets';
   </section>
 
   <!-- Favorite Places Section -->
-  <section class="section-padding">
+  <section class="section-padding" aria-labelledby="favorite-places">
     <div class="container-custom">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h2
+          id="favorite-places"
+          class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Favorite Places
         </h2>
         <p class="text-xl text-gray-700 max-w-2xl mx-auto">
@@ -64,12 +81,12 @@ import { Image } from 'astro:assets';
 
       <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
         <!-- Tualatin Community Park -->
-        <div
+        <article
           class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
           <div class="h-64 overflow-hidden">
             <Image
               src={tualatinRiver}
-              alt="Tualatin Community Park - Calm water perfect for paddle boarding"
+              alt="Tualatin Community Park on Tualatin River - Calm water perfect for paddle boarding beginners"
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               width={600}
               height={400}
@@ -90,16 +107,23 @@ import { Image } from 'astro:assets';
               river to explore. This beautiful location is a great getaway found
               right in the city.
             </p>
+            <div class="mt-4 text-sm text-gray-600">
+              <p><strong>Best for:</strong> Beginners, Families</p>
+              <p><strong>Water type:</strong> Calm river water</p>
+              <p>
+                <strong>Amenities:</strong> Parking, restrooms, picnic areas
+              </p>
+            </div>
           </div>
-        </div>
+        </article>
 
         <!-- Silverton Reservoir -->
-        <div
+        <article
           class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
           <div class="h-64 overflow-hidden">
             <Image
               src={silvertonReservoir}
-              alt="Silverton Reservoir - Wide body of calm water surrounded by green scenery"
+              alt="Silverton Reservoir - Wide body of calm water surrounded by green scenery perfect for paddle boarding"
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               width={600}
               height={400}
@@ -119,16 +143,23 @@ import { Image } from 'astro:assets';
               green scenery, The Reservoir is a great place for beginners with
               options to explore upstream when the water level is high.
             </p>
+            <div class="mt-4 text-sm text-gray-600">
+              <p><strong>Best for:</strong> Beginners, Scenic tours</p>
+              <p><strong>Water type:</strong> Calm reservoir</p>
+              <p>
+                <strong>Features:</strong> Wide open water, beautiful scenery
+              </p>
+            </div>
           </div>
-        </div>
+        </article>
 
         <!-- North Fork Estacada Reservoir -->
-        <div
+        <article
           class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
           <div class="h-64 overflow-hidden">
             <Image
               src={estacadaImage}
-              alt="North Fork Estacada Reservoir - Mountain location with refreshing paddle boarding"
+              alt="North Fork Estacada Reservoir - Mountain location with refreshing paddle boarding and motorboat activity"
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               width={600}
               height={400}
@@ -150,35 +181,144 @@ import { Image } from 'astro:assets';
               and your group should feel confident they can learn quickly to
               navigate around the slow-moving powered vessels.
             </p>
+            <div class="mt-4 text-sm text-gray-600">
+              <p>
+                <strong>Best for:</strong> Intermediate paddlers, Adventure seekers
+              </p>
+              <p>
+                <strong>Water type:</strong> Mountain reservoir with boat traffic
+              </p>
+              <p>
+                <strong>Challenge level:</strong> Moderate (wake navigation required)
+              </p>
+            </div>
           </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location Features Section -->
+  <section
+    class="section-padding bg-gray-50"
+    aria-labelledby="location-features">
+    <div class="container-custom">
+      <div class="text-center mb-16">
+        <h2
+          id="location-features"
+          class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          What Makes Our Locations Special
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div
+            class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+            aria-hidden="true">
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Safe Waters</h3>
+          <p class="text-gray-600">
+            All locations are carefully selected for safety and accessibility
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div
+            class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4"
+            aria-hidden="true">
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Easy Access</h3>
+          <p class="text-gray-600">
+            Convenient parking and launch areas at all locations
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div
+            class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+            aria-hidden="true">
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Scenic Beauty
+          </h3>
+          <p class="text-gray-600">
+            Breathtaking natural surroundings at every location
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div
+            class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4"
+            aria-hidden="true">
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            All Skill Levels
+          </h3>
+          <p class="text-gray-600">
+            Options for beginners through advanced paddlers
+          </p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Call to Action -->
-  <section class="section-padding bg-primary-600">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
-        Ready to Explore These Locations?
-      </h2>
-      <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
-        Book your paddle boarding adventure at any of our beautiful locations
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href="/book"
-          class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
-          data-astro-prefetch="viewport">
-          Book Your Adventure
-        </a>
-        <a
-          href="/contact"
-          class="inline-block border-2 border-white text-white hover:bg-white hover:text-primary-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
-          data-astro-prefetch>
-          Contact Us
-        </a>
-      </div>
-    </div>
-  </section>
+  <CallToAction
+    title="Ready to Explore These Locations?"
+    description="Book your paddle boarding adventure at any of our beautiful locations"
+    sectionId="ready-to-explore"
+  />
 </Layout>
