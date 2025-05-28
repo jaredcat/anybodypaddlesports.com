@@ -1,0 +1,110 @@
+---
+import Layout from '@/components/Layout.astro';
+import { LOCATIONS, getActiveLocations } from '@/config/locations.ts';
+
+const activeLocations = getActiveLocations();
+const inactiveLocations = LOCATIONS.filter(loc => !loc.active);
+---
+
+<Layout title="Locations Management - Admin" description="Manage paddlesports locations">
+  <section class="section-padding">
+    <div class="container-custom">
+      <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Locations Management</h1>
+
+        <div class="bg-blue-50 rounded-xl p-6 mb-8">
+          <h2 class="text-lg font-bold mb-3 text-blue-900">📍 How to Add/Change Locations</h2>
+          <p class="text-blue-800 mb-4">
+            Locations are configured in <code class="bg-blue-100 px-2 py-1 rounded">src/config/locations.ts</code>.
+            To add or modify locations:
+          </p>
+          <ol class="list-decimal list-inside space-y-2 text-blue-800 ml-4">
+            <li>Edit the <code class="bg-blue-100 px-2 py-1 rounded">LOCATIONS</code> array in the config file</li>
+            <li>Set <code class="bg-blue-100 px-2 py-1 rounded">active: true</code> to make a location available</li>
+            <li>Update the booking page with event types for the new location</li>
+            <li>The admin manager and dropdowns will automatically update</li>
+          </ol>
+        </div>
+
+        <!-- Active Locations -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <h2 class="text-xl font-bold mb-4 text-green-600">✅ Active Locations ({activeLocations.length})</h2>
+          <div class="grid md:grid-cols-2 gap-6">
+            {activeLocations.map(location => (
+              <div class="border border-green-200 rounded-lg p-4">
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-semibold text-lg">{location.displayName}</h3>
+                  <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Active</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-2">{location.description}</p>
+                <div class="text-xs text-gray-500 space-y-1">
+                  <p><strong>ID:</strong> {location.id}</p>
+                  <p><strong>Slug:</strong> {location.slug}</p>
+                  {location.address && <p><strong>Address:</strong> {location.address}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Inactive Locations -->
+        {inactiveLocations.length > 0 && (
+          <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-xl font-bold mb-4 text-gray-600">⏸️ Inactive Locations ({inactiveLocations.length})</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+              {inactiveLocations.map(location => (
+                <div class="border border-gray-200 rounded-lg p-4 opacity-75">
+                  <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-lg">{location.displayName}</h3>
+                    <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">Inactive</span>
+                  </div>
+                  <p class="text-gray-600 text-sm mb-2">{location.description}</p>
+                  <div class="text-xs text-gray-500 space-y-1">
+                    <p><strong>ID:</strong> {location.id}</p>
+                    <p><strong>Slug:</strong> {location.slug}</p>
+                    {location.address && <p><strong>Address:</strong> {location.address}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Configuration Example -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+          <h2 class="text-xl font-bold mb-4">📝 Example: Adding a New Location</h2>
+          <p class="text-gray-600 mb-4">Add this to the <code class="bg-gray-100 px-2 py-1 rounded">LOCATIONS</code> array:</p>
+
+          <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm"><code>{`{
+  id: 'sarasota',
+  name: 'Sarasota',
+  displayName: 'Sarasota',
+  slug: 'sarasota',
+  address: 'Sarasota Bay, FL',
+  description: 'Beautiful bay paddling with dolphin sightings',
+  active: true, // Set to false until ready to launch
+},`}</code></pre>
+
+          <div class="mt-4 p-4 bg-yellow-50 rounded-lg">
+            <h4 class="font-semibold text-yellow-800 mb-2">💡 Pro Tips:</h4>
+            <ul class="text-yellow-700 text-sm space-y-1">
+              <li>• Use <code class="bg-yellow-100 px-1 rounded">active: false</code> to prepare locations before launch</li>
+              <li>• Keep IDs and slugs lowercase with hyphens (kebab-case)</li>
+              <li>• The slug is used for Cal.com event type URLs</li>
+              <li>• Description appears in location cards and forms</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center space-x-4">
+          <a href="/admin/cal" class="btn-primary">
+            Manage Event Types
+          </a>
+          <a href="/book" class="btn-secondary">
+            View Booking Page
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

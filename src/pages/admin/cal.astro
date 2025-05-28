@@ -1,0 +1,333 @@
+---
+import Layout from '@/components/Layout.astro';
+import { getLocationNames } from '@/config/locations.ts';
+
+const locationNames = getLocationNames();
+---
+
+<Layout title="Cal.com Event Manager - Admin" description="Manage tour and rental event types">
+  <section class="section-padding">
+    <div class="container-custom">
+      <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Cal.com Event Manager</h1>
+
+        <!-- API Key Status -->
+        <div id="apiStatus" class="mb-6"></div>
+
+        <!-- Location Selector -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-2">Location Filter</label>
+          <select id="locationSelect" class="w-full p-3 border rounded-lg">
+            <option value="">All Locations</option>
+            {locationNames.map(location => (
+              <option value={location}>{location}</option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Event Type Creator -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">Create/Edit Event Type</h2>
+
+          <form id="eventTypeForm" class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Location</label>
+              <select id="eventLocation" class="w-full p-3 border rounded-lg" required>
+                <option value="">Select Location</option>
+                {locationNames.map(location => (
+                  <option value={location}>{location}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Event Name</label>
+              <input type="text" id="eventName" class="w-full p-3 border rounded-lg" placeholder="2-Hour Guided Tour">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Event Type</label>
+              <select id="eventType" class="w-full p-3 border rounded-lg">
+                <option value="tour">Guided Tour</option>
+                <option value="rental">Equipment Rental</option>
+                <option value="lesson">Private Lesson</option>
+                <option value="group">Group Event</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Duration (minutes)</label>
+              <input type="number" id="duration" class="w-full p-3 border rounded-lg" value="60">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Price ($)</label>
+              <input type="number" id="price" class="w-full p-3 border rounded-lg" step="0.01">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium mb-2">Description</label>
+              <textarea id="description" class="w-full p-3 border rounded-lg h-24" placeholder="Describe the experience..."></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Max Participants</label>
+              <input type="number" id="maxParticipants" class="w-full p-3 border rounded-lg" value="6">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Advance Booking (days)</label>
+              <input type="number" id="advanceBooking" class="w-full p-3 border rounded-lg" value="1">
+            </div>
+
+            <div class="md:col-span-2">
+              <button type="submit" class="btn-primary">Create Event Type</button>
+              <button type="button" id="updateBtn" class="btn-secondary ml-4" style="display: none;">Update Event Type</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Existing Event Types -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h2 class="text-xl font-bold mb-4">Existing Event Types</h2>
+          <div id="eventTypesList" class="space-y-4">
+            <!-- Event types will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline type="module" define:vars={{ locationNames }}>
+    class CalEventManager {
+      constructor() {
+        this.baseUrl = '/api/cal';
+        this.locationFilter = '';
+        this.editingEventId = null;
+        this.allEventTypes = [];
+        this.locations = locationNames;
+
+        this.initEventListeners();
+        this.checkApiStatus();
+        this.loadEventTypes();
+      }
+
+      initEventListeners() {
+        document.getElementById('locationSelect').addEventListener('change', (e) => {
+          this.locationFilter = e.target.value;
+          this.filterEventTypes();
+        });
+
+        document.getElementById('eventTypeForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.editingEventId ? this.updateEventType() : this.createEventType();
+        });
+      }
+
+      async apiCall(endpoint, method = 'GET', data = null) {
+        const options = {
+          method,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
+
+        if (data) {
+          options.body = JSON.stringify(data);
+        }
+
+        try {
+          const response = await fetch(`${this.baseUrl}${endpoint}`, options);
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: response.statusText }));
+            throw new Error(errorData.error || `API call failed: ${response.statusText}`);
+          }
+          return await response.json();
+        } catch (error) {
+          console.error('API Error:', error);
+          throw error;
+        }
+      }
+
+      async createEventType() {
+        try {
+          const formData = this.getFormData();
+          const result = await this.apiCall('/event-types', 'POST', formData);
+          if (result) {
+            alert('Event type created successfully!');
+            this.resetForm();
+            this.loadEventTypes();
+          }
+        } catch (error) {
+          alert('Failed to create event type: ' + error.message);
+        }
+      }
+
+      async updateEventType() {
+        try {
+          const formData = this.getFormData();
+          formData.id = this.editingEventId;
+          const result = await this.apiCall('/event-types', 'PATCH', formData);
+          if (result) {
+            alert('Event type updated successfully!');
+            this.resetForm();
+            this.loadEventTypes();
+          }
+        } catch (error) {
+          alert('Failed to update event type: ' + error.message);
+        }
+      }
+
+      async deleteEventType(eventId) {
+        if (!confirm('Are you sure you want to delete this event type?')) return;
+
+        try {
+          const params = new URLSearchParams({ id: eventId });
+          const result = await this.apiCall(`/event-types?${params}`, 'DELETE');
+          if (result) {
+            alert('Event type deleted successfully!');
+            this.loadEventTypes();
+          }
+        } catch (error) {
+          alert('Failed to delete event type: ' + error.message);
+        }
+      }
+
+      async checkApiStatus() {
+        try {
+          await this.apiCall('/event-types');
+          this.showApiStatus('success', '✅ Cal.com API connected successfully');
+        } catch (error) {
+          if (error.message.includes('API key is required')) {
+            this.showApiStatus('warning', '⚠️ Cal.com API key not configured. Please set CAL_API_KEY environment variable.');
+          } else {
+            this.showApiStatus('error', `❌ Cal.com API error: ${error.message}`);
+          }
+        }
+      }
+
+      showApiStatus(type, message) {
+        const statusDiv = document.getElementById('apiStatus');
+        const bgColor = type === 'success' ? 'bg-green-100 text-green-700' :
+                       type === 'warning' ? 'bg-yellow-100 text-yellow-700' :
+                       'bg-red-100 text-red-700';
+
+        statusDiv.innerHTML = `
+          <div class="rounded-lg p-4 ${bgColor}">
+            <p class="text-sm font-medium">${message}</p>
+            ${type === 'warning' ? `
+              <p class="text-xs mt-2">
+                Get your API key from: <a href="https://app.cal.com/settings/security" target="_blank" class="underline">Cal.com Settings > Security</a>
+              </p>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      async loadEventTypes() {
+        try {
+          console.log('Loading event types...');
+          const result = await this.apiCall('/event-types');
+          console.log('API result:', result);
+
+          if (result && result.data && result.data.event_types) {
+            console.log('Found event types:', result.data.event_types);
+            this.allEventTypes = result.data.event_types;
+            this.filterEventTypes();
+          } else {
+            console.log('No event types found or unexpected response structure:', result);
+            this.renderEventTypes([]);
+          }
+        } catch (error) {
+          console.error('Failed to load event types:', error);
+          this.renderEventTypes([]);
+        }
+      }
+
+      filterEventTypes() {
+        let filtered = this.allEventTypes;
+        if (this.locationFilter) {
+          filtered = this.allEventTypes.filter(eventType =>
+            eventType.title.startsWith(this.locationFilter + ' -')
+          );
+        }
+        this.renderEventTypes(filtered);
+      }
+
+      getFormData() {
+        const location = document.getElementById('eventLocation').value;
+        const eventName = document.getElementById('eventName').value;
+        const fullTitle = `${location} - ${eventName}`;
+
+        return {
+          title: fullTitle,
+          slug: fullTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+          length: parseInt(document.getElementById('duration').value),
+          description: document.getElementById('description').value,
+          price: parseFloat(document.getElementById('price').value) * 100, // Convert to cents
+          currency: 'USD',
+          seatsPerTimeSlot: parseInt(document.getElementById('maxParticipants').value),
+          minimumBookingNotice: parseInt(document.getElementById('advanceBooking').value) * 24 * 60, // Convert to minutes
+          locations: [{ type: 'inPerson', address: `${location} - Location details will be provided upon booking` }]
+        };
+      }
+
+      renderEventTypes(eventTypes) {
+        const container = document.getElementById('eventTypesList');
+        container.innerHTML = '';
+
+        eventTypes.forEach(eventType => {
+          const eventDiv = document.createElement('div');
+          eventDiv.className = 'border rounded-lg p-4 flex justify-between items-center';
+
+          // Handle price display - Cal.com returns price in cents for paid events, 0 for free
+          const priceDisplay = eventType.price > 0 ? `$${(eventType.price / 100).toFixed(2)}` : 'Free';
+
+          eventDiv.innerHTML = `
+            <div>
+              <h3 class="font-bold">${eventType.title}</h3>
+              <p class="text-gray-600">${eventType.length} min • ${priceDisplay}</p>
+              <p class="text-sm text-gray-500">${eventType.description || 'No description'}</p>
+              <p class="text-xs text-gray-400">Slug: ${eventType.slug}</p>
+            </div>
+            <div class="space-x-2">
+              <button onclick="manager.editEventType('${eventType.id}')" class="btn-secondary text-sm">Edit</button>
+              <button onclick="manager.deleteEventType('${eventType.id}')" class="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
+            </div>
+          `;
+          container.appendChild(eventDiv);
+        });
+
+        if (eventTypes.length === 0) {
+          container.innerHTML = '<p class="text-gray-500 text-center py-8">No event types found. Create your first event type above.</p>';
+        }
+      }
+
+      editEventType(eventId) {
+        // Load event type data into form for editing
+        this.editingEventId = eventId;
+        // Implementation would load the specific event type data
+        const updateBtn = document.getElementById('updateBtn');
+        if (updateBtn) updateBtn.style.display = 'inline-block';
+        const submitBtn = document.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.style.display = 'none';
+      }
+
+      resetForm() {
+        const form = document.getElementById('eventTypeForm');
+        if (form && form.reset) form.reset();
+        this.editingEventId = null;
+        const updateBtn = document.getElementById('updateBtn');
+        if (updateBtn) updateBtn.style.display = 'none';
+        const submitBtn = document.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.style.display = 'inline-block';
+      }
+    }
+
+    // Initialize the manager
+    const manager = new CalEventManager();
+
+    // Make it globally accessible for button clicks
+    window.manager = manager;
+  </script>
+</Layout>

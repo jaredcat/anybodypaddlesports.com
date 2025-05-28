@@ -1,0 +1,90 @@
+---
+import { SITE_CONFIG } from '@/config/site';
+import Icon from './Icon.astro';
+
+// Get current path for active navigation highlighting
+const currentPath = Astro.url.pathname;
+---
+
+<header class="bg-header-background text-header-text shadow-sm sticky top-0 z-50">
+  <nav class="container-custom">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex-shrink-0">
+        <a href="/" class="block">
+          <img
+            src="/Logo-Horizontal-Light-768x213.png"
+            alt={SITE_CONFIG.name}
+            class="h-10 w-auto"
+          />
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-4">
+          <a href="/" class={`nav-link ${currentPath === '/' ? 'active' : ''}`}>Home</a>
+          <a href="/what-to-expect" class={`nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}>What to Expect</a>
+          <a href="/locations" class={`nav-link ${currentPath === '/locations' ? 'active' : ''}`}>Locations</a>
+          <a href="/contact" class={`nav-link ${currentPath === '/contact' ? 'active' : ''}`}>Contact</a>
+          <a href="/book" class="btn-primary">Book Now</a>
+        </div>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button
+          type="button"
+          class="text-header-text hover:text-primary focus:outline-none focus:text-primary"
+          id="mobile-menu-button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="sr-only">Open main menu</span>
+          <Icon name="bars-3" />
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="md:hidden hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
+      <a href="/" class={`mobile-nav-link ${currentPath === '/' ? 'active' : ''}`}>Home</a>
+      <a href="/what-to-expect" class={`mobile-nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}>What to Expect</a>
+      <a href="/locations" class={`mobile-nav-link ${currentPath === '/locations' ? 'active' : ''}`}>Locations</a>
+      <a href="/contact" class={`mobile-nav-link ${currentPath === '/contact' ? 'active' : ''}`}>Contact</a>
+      <a href="/book" class="btn-primary block text-center">Book Now</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav-link {
+    @apply text-header-text hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors;
+  }
+
+  .nav-link.active {
+    @apply text-primary border-b-2 border-primary;
+  }
+
+  .mobile-nav-link {
+    @apply text-gray-800 hover:text-primary-700 block px-3 py-2 rounded-md text-base font-medium;
+  }
+
+  .mobile-nav-link.active {
+    @apply text-primary-700 bg-primary-50;
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+    if (mobileMenu) {
+      mobileMenu.classList.toggle('hidden');
+      this.setAttribute('aria-expanded', (!isExpanded).toString());
+    }
+  });
+</script>

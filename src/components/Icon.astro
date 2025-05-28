@@ -1,0 +1,28 @@
+---
+import { icons, type IconName } from '@/generated/icons';
+
+export interface Props {
+  name: IconName; // Type-safe icon names!
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'hero';
+  class?: string;
+}
+
+const { name, size = 'md', class: className = '' } = Astro.props;
+
+// Size mappings
+const sizeClasses = {
+  sm: 'w-4 h-4',
+  md: 'w-6 h-6',
+  lg: 'w-8 h-8',
+  xl: 'w-12 h-12',
+  xxl: 'w-24 h-24',
+  hero: ''
+};
+
+// Get the SVG content (build-time resolved, zero runtime overhead)
+const iconSvg = icons[name];
+const classes = `${sizeClasses[size]} ${className}`;
+const style = size === 'hero' ? 'width: 300px; height: 300px;' : '';
+---
+
+<div class={classes} style={style} set:html={iconSvg} />

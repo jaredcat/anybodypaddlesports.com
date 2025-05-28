@@ -1,0 +1,30 @@
+---
+interface Props {
+  location: {
+    name: string;
+    slug: string;
+  };
+  eventTypes: {
+    name: string;
+    calLink: string;
+    type: 'primary' | 'secondary';
+  }[];
+}
+
+const { location, eventTypes } = Astro.props;
+---
+
+<div class="border-2 border-gray-200 rounded-lg p-4">
+  <h4 class="font-semibold mb-2">{location.name}</h4>
+  <div class="space-y-2">
+    {eventTypes.map(event => (
+      <button
+        class={`w-full ${event.type === 'primary' ? 'btn-primary' : 'btn-secondary'}`}
+        data-cal-link={event.calLink}
+        data-cal-config='{"layout":"month_view"}'
+      >
+        {event.name}
+      </button>
+    ))}
+  </div>
+</div>

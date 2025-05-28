@@ -1,0 +1,143 @@
+---
+import type { IconName } from '@/generated/icons';
+import Icon from './Icon.astro';
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  description: string;
+  ctaText?: string;
+  ctaLink?: string;
+  iconName?: IconName; // Optional SVG icon name
+  backgroundVideo?: string; // Optional Vimeo video URL or embed code
+  backgroundImage?: string; // Optional background image URL
+}
+
+const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVideo, backgroundImage } = Astro.props;
+---
+
+<section class="relative bg-gradient-to-br from-primary-600 to-accent-600 text-white overflow-hidden min-h-screen flex items-center">
+  <!-- Background Video -->
+  {backgroundVideo && (
+    <div class="absolute inset-0 w-full h-full overflow-hidden z-0">
+      <iframe
+        src={backgroundVideo}
+        class="absolute video-background"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+        title="Background Video"
+        data-ready="true"
+      ></iframe>
+    </div>
+  )}
+
+  <!-- Background Image -->
+  {backgroundImage && !backgroundVideo && (
+    <div
+      class="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
+      style={`background-image: url(${backgroundImage})`}
+    ></div>
+  )}
+
+  <!-- Color overlay with screen blend mode -->
+  <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-accent-600 mix-blend-screen opacity-80 z-10"></div>
+
+  <!-- Wave border at bottom -->
+  <div class="wave-border">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+      <path class="elementor-shape-fill" d="M421.9,6.5c22.6-2.5,51.5,0.4,75.5,5.3c23.6,4.9,70.9,23.5,100.5,35.7c75.8,32.2,133.7,44.5,192.6,49.7
+      c23.6,2.1,48.7,3.5,103.4-2.5c54.7-6,106.2-25.6,106.2-25.6V0H0v30.3c0,0,72,32.6,158.4,30.5c39.2-0.7,92.8-6.7,134-22.4
+      c21.2-8.1,52.2-18.2,79.7-24.2C399.3,7.9,411.6,7.5,421.9,6.5z"></path>
+    </svg>
+  </div>
+
+  <div class="relative container-custom py-12 lg:py-16 z-20 w-full">
+    {iconName ? (
+      <!-- Two-column layout with icon on right -->
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="text-center lg:text-left">
+          <h1 class="text-4xl md:text-6xl font-bold mb-6">
+            {title}
+            {subtitle && (
+              <span class="block text-2xl md:text-3xl font-normal mt-2 opacity-90">
+                {subtitle}
+              </span>
+            )}
+          </h1>
+
+          <p class="text-xl md:text-2xl mb-8 opacity-90">
+            {description}
+          </p>
+
+          {ctaText && ctaLink && (
+            <a href={ctaLink} class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg">
+              {ctaText}
+            </a>
+          )}
+        </div>
+
+        <div class="flex justify-center lg:justify-end">
+          <div class="bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white border-opacity-30" style="width: 400px; height: 400px;">
+            <Icon name={iconName} size="hero" class="text-white drop-shadow-lg" />
+          </div>
+        </div>
+      </div>
+    ) : (
+      <!-- Centered layout without icon -->
+      <div class="text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+          {title}
+          {subtitle && (
+            <span class="block text-2xl md:text-3xl font-normal mt-2 opacity-90">
+              {subtitle}
+            </span>
+          )}
+        </h1>
+
+        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+          {description}
+        </p>
+
+        {ctaText && ctaLink && (
+          <a href={ctaLink} class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg">
+            {ctaText}
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .wave-border {
+    transform: rotate(180deg);
+    bottom: -1px;
+    direction: ltr;
+    left: 0;
+    line-height: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 60px; /* Adjust height as needed */
+  }
+
+  .wave-border svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .elementor-shape-fill {
+    fill: #f9fafb; /* This matches bg-gray-50 from Tailwind CSS */
+  }
+
+  .video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw; /* 16:9 aspect ratio */
+    min-height: 100vh;
+    min-width: 177.78vh; /* 16:9 aspect ratio */
+    transform: translate(-50%, -50%);
+  }
+</style>
