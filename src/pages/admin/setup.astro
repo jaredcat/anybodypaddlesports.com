@@ -1,0 +1,95 @@
+---
+import Layout from '@/components/Layout.astro';
+---
+
+<Layout title="Cal.com Setup Instructions" description="How to configure Cal.com API integration">
+  <section class="section-padding">
+    <div class="container-custom">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Cal.com API Setup Instructions</h1>
+
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <h2 class="text-xl font-bold mb-4">Step 1: Get Your Cal.com API Key</h2>
+          <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li>Go to <a href="https://app.cal.com/settings/security" target="_blank" class="text-blue-600 underline">Cal.com Settings > Security</a></li>
+            <li>Scroll down to the "API Keys" section</li>
+            <li>Click "Create New API Key"</li>
+            <li>Give it a name like "AnyBody Paddlesports Website"</li>
+            <li>Copy the generated API key (starts with "cal_live_" or "cal_test_")</li>
+          </ol>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <h2 class="text-xl font-bold mb-4">Step 2: Configure Environment Variable</h2>
+
+          <div class="mb-4">
+            <h3 class="font-semibold mb-2">For Local Development:</h3>
+            <p class="text-gray-600 mb-2">Create a <code class="bg-gray-100 px-2 py-1 rounded">.env</code> file in your project root:</p>
+            <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto"><code>CAL_API_KEY=cal_live_your_api_key_here</code></pre>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="font-semibold mb-2">For Production (GitHub Pages):</h3>
+            <p class="text-gray-600 mb-2">Since GitHub Pages doesn't support server-side environment variables, you have a few options:</p>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+              <li><strong>Use Netlify or Vercel instead</strong> (recommended) - they support environment variables</li>
+              <li><strong>Client-side only</strong> - Skip the admin manager and create event types manually in Cal.com</li>
+              <li><strong>Self-hosted</strong> - Deploy to a server that supports environment variables</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <h2 class="text-xl font-bold mb-4">Step 3: Test the Integration</h2>
+          <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li>Restart your development server: <code class="bg-gray-100 px-2 py-1 rounded">npm run dev</code></li>
+            <li>Visit <a href="/admin/cal" class="text-blue-600 underline">/admin/cal</a></li>
+            <li>You should see a green "✅ Cal.com API connected successfully" message</li>
+            <li>Try creating a test event type to verify everything works</li>
+          </ol>
+        </div>
+
+        <div class="bg-blue-50 rounded-xl p-6 mb-8">
+          <h2 class="text-lg font-bold mb-3 text-blue-900">💡 Alternative: Manual Setup</h2>
+          <p class="text-blue-800">
+            If you prefer not to use the API integration, you can manually create event types in Cal.com following the naming convention
+            in the <a href="/docs/cal-setup-guide.md" class="underline">setup guide</a>, then update the booking page with the correct links.
+          </p>
+        </div>
+
+        <div class="bg-gray-50 rounded-xl p-6">
+          <h2 class="text-lg font-bold mb-3">🚀 Deployment Options</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-lg">
+              <h4 class="font-semibold mb-2">Netlify (Recommended)</h4>
+              <ul class="text-sm text-gray-600 space-y-1">
+                <li>• Supports environment variables</li>
+                <li>• Easy GitHub integration</li>
+                <li>• Free tier available</li>
+                <li>• Server-side functions work</li>
+              </ul>
+            </div>
+            <div class="bg-white p-4 rounded-lg">
+              <h4 class="font-semibold mb-2">Vercel</h4>
+              <ul class="text-sm text-gray-600 space-y-1">
+                <li>• Excellent performance</li>
+                <li>• Environment variables support</li>
+                <li>• Easy deployment</li>
+                <li>• Great for Astro projects</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center">
+          <a href="/admin/cal" class="btn-primary mr-4">
+            Test Cal.com Manager
+          </a>
+          <a href="/book" class="btn-secondary">
+            View Booking Page
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,152 @@
+---
+import Hero from "@/components/Hero.astro";
+import Layout from "@/components/Layout.astro";
+import { SITE_CONFIG } from "@/config/site";
+---
+
+<Layout
+  title={`Locations - ${SITE_CONFIG.name}`}
+  description="Discover our paddle boarding locations including Tualatin Community Park, Silverton Reservoir, and North Fork Estacada Reservoir. Interactive map and detailed location information."
+>
+  <!-- Hero Section -->
+  <Hero
+    title="Places To Go"
+    description="Explore our favorite paddle boarding destinations with calm waters perfect for beginners and scenic routes for adventure seekers"
+  />
+
+  <!-- Interactive Map Section -->
+  <section class="section-padding bg-gray-50">
+    <div class="container-custom">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Interactive Map</h2>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">Click on an icon to learn more about our locations.</p>
+      </div>
+
+      <div class="flex justify-center">
+        <div class="w-full max-w-4xl">
+          <div class="relative rounded-lg overflow-hidden shadow-lg bg-white p-4">
+            <iframe
+              src="https://www.google.com/maps/d/u/0/embed?mid=1NhJQO30MP6YPknbuJvaAk649khy7clOI"
+              width="100%"
+              height="600"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              class="rounded"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Favorite Places Section -->
+  <section class="section-padding">
+    <div class="container-custom">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Favorite Places</h2>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">Our most popular paddle boarding destinations</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+        <!-- Tualatin Community Park -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="h-64 overflow-hidden">
+            <img
+              src="/Tualatin-RIver-Tualatin-Community-Park.jpg"
+              alt="Tualatin Community Park - Calm water perfect for paddle boarding"
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Tualatin Community Park</h3>
+            <h4 class="text-lg font-semibold text-primary-600 mb-3">Tualatin River</h4>
+            <p class="text-gray-700 leading-relaxed">
+              Calm water makes Tualatin Community Park a great place for beginners. Stay near the launch area to learn or head down the river to explore. This beautiful location is a great getaway found right in the city.
+            </p>
+          </div>
+        </div>
+
+        <!-- Silverton Reservoir -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="h-64 overflow-hidden">
+            <img
+              src="/G0062626-scaled.jpg"
+              alt="Silverton Reservoir - Wide body of calm water surrounded by green scenery"
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Silverton Reservoir</h3>
+            <h4 class="text-lg font-semibold text-primary-600 mb-3">Silverton Reservoir</h4>
+            <p class="text-gray-700 leading-relaxed">
+              Silverton Reservoir is a wide body of calm water. Surrounded by green scenery, The Reservoir is a great place for beginners with options to explore upstream when the water level is high.
+            </p>
+          </div>
+        </div>
+
+        <!-- North Fork Estacada Reservoir -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="h-64 overflow-hidden">
+            <img
+              src="/IMG_20200907_095633.jpg"
+              alt="North Fork Estacada Reservoir - Mountain location with refreshing paddle boarding"
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">North Fork Estacada Reservoir</h3>
+            <h4 class="text-lg font-semibold text-primary-600 mb-3">Estacada</h4>
+            <p class="text-gray-700 leading-relaxed">
+              Estacada is located at a higher elevation in the mountains making it a refreshing location for paddlesports. Beginners can start here but be prepared to fall in more! The motor boats create wakes and your group should feel confident they can learn quickly to navigate around the slow-moving powered vessels.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="section-padding bg-gray-50">
+    <div class="container-custom">
+      <div class="max-w-2xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Subscribe to our Newsletter</h2>
+        <p class="text-xl text-gray-700 mb-8">Stay updated on new locations, special offers, and paddle boarding tips</p>
+
+        <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          />
+          <button
+            type="submit"
+            class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="section-padding bg-primary-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Explore These Locations?</h2>
+      <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
+        Book your paddle boarding adventure at any of our beautiful locations
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/book" class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+          Book Your Adventure
+        </a>
+        <a href="/contact" class="inline-block border-2 border-white text-white hover:bg-white hover:text-primary-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

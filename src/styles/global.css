@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Roboto+Slab:wght@400&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --e-global-color-primary: #6ec1e4;
+  --e-global-color-secondary: #54595f;
+  --e-global-color-text: #7a7a7a;
+  --e-global-color-accent: #61ce70;
+  --e-global-color-header: #1d6baa;
+  --e-global-color-header-text: #ffffff;
+  --e-global-typography-primary-font-family: 'Roboto';
+  --e-global-typography-primary-font-weight: 600;
+  --e-global-typography-secondary-font-family: 'Roboto Slab';
+  --e-global-typography-secondary-font-weight: 400;
+  --e-global-typography-text-font-family: 'Roboto';
+  --e-global-typography-text-font-weight: 400;
+  --e-global-typography-accent-font-family: 'Roboto';
+  --e-global-typography-accent-font-weight: 500;
+}
+
+@layer base {
+  html {
+    font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+    color: var(--e-global-color-text);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-primary-700 text-primary-700 hover:bg-primary-700 hover:text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200;
+  }
+
+  .section-padding {
+    @apply py-16 lg:py-24;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}

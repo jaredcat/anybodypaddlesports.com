@@ -1,0 +1,156 @@
+---
+import Hero from "@/components/Hero.astro";
+import Icon from "@/components/Icon.astro";
+import Layout from "@/components/Layout.astro";
+import { SITE_CONFIG } from "@/config/site";
+---
+
+<Layout
+  title={`${SITE_CONFIG.name} - Paddle Board Tours & Rentals`}
+  description="Professional paddle board tours and equipment rentals. Experience the beauty of local waterways with certified instructors and top-quality gear."
+>
+  <!-- Hero Section -->
+  <Hero
+    title="Paddle Board Adventures"
+    subtitle="Tours & Rentals"
+    description="Experience the beauty of local waterways with professional guides and top-quality equipment"
+    ctaText="Book Your Adventure"
+    ctaLink="/book"
+    iconName="logo"
+    backgroundVideo="https://player.vimeo.com/video/554530683?muted=1&autoplay=1&loop=1&background=1&app_id=122963"
+  />
+
+  <!-- Why Choose Us Section -->
+  <section class="section-padding bg-gray-50">
+    <div class="container-custom">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose AnyBody Paddlesports?</h2>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">We provide safe, flexible, and memorable paddle boarding experiences for everyone</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+        <!-- Safety -->
+        <div class="text-center">
+          <div class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Icon name="shield-check" size="lg" class="text-white" />
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Safety First</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Our helpful and fun-loving instructors are professionally trained and equipped with top-of-the-line gear to keep you safe during your experience. We've got you covered, so you don't need to worry about anything but getting wet!
+          </p>
+        </div>
+
+        <!-- Flexibility -->
+        <div class="text-center">
+          <div class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Icon name="bolt" size="lg" class="text-white" />
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Ultimate Flexibility</h3>
+          <p class="text-gray-700 leading-relaxed">
+            You have control over your trip. With our unique company mobility, AnyBody Paddlesports allows you to utilize almost any body of water. We offer multiple levels of personal training (beginner to advanced), options for a variety of waterborne games, and flexible hours means the fun lasts as long as you want!
+          </p>
+        </div>
+
+        <!-- Capture Memories -->
+        <div class="text-center">
+          <div class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Icon name="video-camera" size="lg" class="text-white" />
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Capture Memories</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Share your experience with a custom video made for you. Your group has the option to wear cameras on a helmet, chest, paddle, or board mount. We use the footage to create a one-of-a-kind video for you and your group to treasure.
+            <span class="text-sm italic text-gray-600">*Additional fee for video</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Locations Preview Section -->
+  <section class="section-padding">
+    <div class="container-custom">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Explore Our Locations</h2>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">Discover beautiful paddle boarding destinations across the region</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-6">Multiple Scenic Destinations</h3>
+          <div class="space-y-4">
+            <div class="flex items-start space-x-3">
+              <div class="w-2 h-2 bg-primary-600 rounded-full mt-2 flex-shrink-0"></div>
+              <p class="text-gray-700">Calm waters perfect for beginners at Tualatin Community Park</p>
+            </div>
+            <div class="flex items-start space-x-3">
+              <div class="w-2 h-2 bg-primary-600 rounded-full mt-2 flex-shrink-0"></div>
+              <p class="text-gray-700">Wide open spaces at Silverton Reservoir surrounded by green scenery</p>
+            </div>
+            <div class="flex items-start space-x-3">
+              <div class="w-2 h-2 bg-primary-600 rounded-full mt-2 flex-shrink-0"></div>
+              <p class="text-gray-700">Mountain elevation adventures at North Fork Estacada Reservoir</p>
+            </div>
+            <div class="flex items-start space-x-3">
+              <div class="w-2 h-2 bg-primary-600 rounded-full mt-2 flex-shrink-0"></div>
+              <p class="text-gray-700">Interactive map to explore all available locations</p>
+            </div>
+          </div>
+          <div class="mt-8">
+            <a href="/locations" class="btn-primary">
+              View All Locations
+            </a>
+          </div>
+        </div>
+
+        <div class="relative">
+          <img
+            src="/Tualatin-RIver-Tualatin-Community-Park.jpg"
+            alt="Beautiful paddle boarding location with calm waters"
+            class="rounded-lg shadow-lg w-full h-80 object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="section-padding bg-gray-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">See the Adventure</h2>
+        <p class="text-xl text-gray-200">Watch what makes our paddle boarding experiences special</p>
+      </div>
+
+      <div class="relative rounded-lg overflow-hidden shadow-2xl">
+        <video
+          controls
+          poster="https://anybodypaddlesports.com/wp-content/uploads/2021/04/Anybody-Paddlesports-Sample-Video.00_00_24_14.Still001.png"
+          class="w-full h-auto"
+          preload="metadata"
+        >
+          <source src="https://anybodypaddlesports.com/wp-content/uploads/2021/04/Anybody-Paddlesports-Sample-Video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="section-padding bg-primary-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready for Your Adventure?</h2>
+      <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
+        Book your paddle boarding experience today and create memories that will last a lifetime
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/book" class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+          Book a Tour
+        </a>
+        <a href="/contact" class="inline-block border-2 border-white text-white hover:bg-white hover:text-primary-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
