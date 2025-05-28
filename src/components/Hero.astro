@@ -15,22 +15,11 @@ export interface Props {
 }
 
 const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVideo, backgroundVideoLocal, backgroundImage } = Astro.props;
-
-// Helper function to ensure proper path with base URL
-const getAssetPath = (path: string | undefined) => {
-  if (!path) return path;
-  if (path.startsWith('http') || path.startsWith('//')) return path; // External URLs
-  if (path.startsWith('/')) return `${import.meta.env.BASE_URL}${path.slice(1)}`; // Remove leading slash and add base URL
-  return path;
-};
-
-const processedBackgroundImage = getAssetPath(backgroundImage);
-const processedBackgroundVideoLocal = getAssetPath(backgroundVideoLocal);
 ---
 
 <section class="relative bg-gradient-to-br from-primary-600 to-accent-600 text-white overflow-hidden flex items-center">
   <!-- Background Video -->
-  {processedBackgroundVideoLocal && (
+  {backgroundVideoLocal && (
     <div class="absolute inset-0 w-full h-full overflow-hidden z-0">
       <video
         class="absolute video-background"
@@ -40,15 +29,14 @@ const processedBackgroundVideoLocal = getAssetPath(backgroundVideoLocal);
         playsinline
         preload="auto"
       >
-        <source src={`${processedBackgroundVideoLocal}-720p.mp4`} type="video/mp4" media="(max-width: 768px)" />
-        <source src={`${processedBackgroundVideoLocal}-optimized.mp4`} type="video/mp4" />
-        {/* <source src={`${processedBackgroundVideoLocal}.mp4`} type="video/mp4" /> */}
+        <source src={`${backgroundVideoLocal}-720p.mp4`} type="video/mp4" media="(max-width: 768px)" />
+        <source src={`${backgroundVideoLocal}-optimized.mp4`} type="video/mp4" />
       </video>
     </div>
   )}
 
   <!-- Background Video (External/Iframe) -->
-  {backgroundVideo && !processedBackgroundVideoLocal && (
+  {backgroundVideo && !backgroundVideoLocal && (
     <div class="absolute inset-0 w-full h-full overflow-hidden z-0">
       <iframe
         src={backgroundVideo}
@@ -62,14 +50,14 @@ const processedBackgroundVideoLocal = getAssetPath(backgroundVideoLocal);
   )}
 
   <!-- Background Image -->
-  {processedBackgroundImage && !backgroundVideo && (
+  {backgroundImage && !backgroundVideo && (
     <div
       class="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
-      style={`background-image: url(${processedBackgroundImage})`}
+      style={`background-image: url(${backgroundImage})`}
     ></div>
   )}
 
-  {processedBackgroundImage && (
+  {backgroundImage && (
     // Color overlay with screen blend mode
   <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-accent-600 opacity-90 z-0"></div>
   )}
@@ -115,7 +103,7 @@ const processedBackgroundVideoLocal = getAssetPath(backgroundVideoLocal);
         </div>
       </div>
     ) : (
-      <!-- Centered layout without icon -->
+      // <!-- Centered layout without icon -->
       <div class="text-center">
         <h1 class="text-4xl md:text-6xl font-bold mb-6">
           {title}

@@ -7,37 +7,115 @@ import { getActiveLocations } from '@/config/locations.ts';
 
 const activeLocations = getActiveLocations();
 
-// Fetch actual event types from Cal.com API
+// Fetch actual event types from Cal.com API (server-side with Vercel)
 let availableEventTypes: any[] = [];
 try {
   const apiKey = import.meta.env.CAL_API_KEY;
   if (apiKey) {
+    console.log('Fetching Cal.com event types...');
     const response = await fetch(
       `https://api.cal.com/v1/event-types?apiKey=${apiKey}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
     );
     if (response.ok) {
       const data = await response.json();
       availableEventTypes = data.event_types || [];
+      console.log(`Found ${availableEventTypes.length} event types`);
+    } else {
+      console.warn(
+        'Cal.com API response not ok:',
+        response.status,
+        response.statusText,
+      );
     }
+  } else {
+    console.warn('CAL_API_KEY environment variable not found');
   }
 } catch (error) {
   console.warn('Could not fetch event types for booking page:', error);
 }
 
+// Fallback static event types (for development or if API fails)
+const fallbackEventTypes = [
+  // Tours
+  {
+    title: 'Tualatin Community Park - 2-Hour Guided Tour',
+    slug: 'tualatin-2hr-tour',
+    isRental: false,
+  },
+  {
+    title: 'Tualatin Community Park - Full Day Tour',
+    slug: 'tualatin-full-day',
+    isRental: false,
+  },
+  {
+    title: 'Silverton Reservoir - 2-Hour Guided Tour',
+    slug: 'silverton-2hr-tour',
+    isRental: false,
+  },
+  {
+    title: 'Silverton Reservoir - Full Day Tour',
+    slug: 'silverton-full-day',
+    isRental: false,
+  },
+  {
+    title: 'North Fork Estacada Reservoir - 2-Hour Guided Tour',
+    slug: 'estacada-2hr-tour',
+    isRental: false,
+  },
+  {
+    title: 'North Fork Estacada Reservoir - Full Day Tour',
+    slug: 'estacada-full-day',
+    isRental: false,
+  },
+
+  // Rentals
+  {
+    title: 'Tualatin Community Park - Equipment Rental',
+    slug: 'tualatin-rental',
+    isRental: true,
+  },
+  {
+    title: 'Silverton Reservoir - Equipment Rental',
+    slug: 'silverton-rental',
+    isRental: true,
+  },
+  {
+    title: 'North Fork Estacada Reservoir - Equipment Rental',
+    slug: 'estacada-rental',
+    isRental: true,
+  },
+];
+
+// Use Cal.com data if available, otherwise fallback
+const eventTypesToUse =
+  availableEventTypes.length > 0
+    ? availableEventTypes.map((et) => ({
+        title: et.title,
+        slug: et.slug,
+        isRental: et.title.toLowerCase().includes('rental'),
+      }))
+    : fallbackEventTypes;
+
 // Group event types by location and type
 const tourEventsByLocation = new Map();
 const rentalEventsByLocation = new Map();
 
-availableEventTypes.forEach((eventType) => {
+eventTypesToUse.forEach((eventType) => {
   // Parse location from title (format: "Location - Event Name")
   const titleParts = eventType.title.split(' - ');
   if (titleParts.length >= 2) {
     const location = titleParts[0];
     const eventName = titleParts.slice(1).join(' - ');
 
-    // Determine if it's a tour or rental based on event name
-    const isRental = eventName.toLowerCase().includes('rental');
-    const targetMap = isRental ? rentalEventsByLocation : tourEventsByLocation;
+    // Use the isRental flag to determine type
+    const targetMap = eventType.isRental
+      ? rentalEventsByLocation
+      : tourEventsByLocation;
 
     if (!targetMap.has(location)) {
       targetMap.set(location, []);
@@ -147,9 +225,7 @@ const rentalLocations = activeLocations
                     We're setting up our guided tour bookings. Check back soon
                     or contact us directly to arrange a tour.
                   </p>
-                  <a
-                    href={`${import.meta.env.BASE_URL}contact`}
-                    class="btn-secondary text-sm">
+                  <a href="/contact" class="btn-secondary text-sm">
                     Contact Us
                   </a>
                 </div>
@@ -180,10 +256,6 @@ const rentalLocations = activeLocations
             </li>
             <li class="flex items-center text-gray-700">
               <Icon name="check-solid" size="sm" class="text-green-500 mr-3" />
-              Paddles & life jackets
-            </li>
-            <li class="flex items-center text-gray-700">
-              <Icon name="check-solid" size="sm" class="text-green-500 mr-3" />
               Dry bags included
             </li>
             <li class="flex items-center text-gray-700">
@@ -211,9 +283,7 @@ const rentalLocations = activeLocations
                     We're setting up our equipment rental bookings. Check back
                     soon or contact us directly to arrange a rental.
                   </p>
-                  <a
-                    href={`${import.meta.env.BASE_URL}contact`}
-                    class="btn-secondary text-sm">
+                  <a href="/contact" class="btn-secondary text-sm">
                     Contact Us
                   </a>
                 </div>
@@ -227,13 +297,27 @@ const rentalLocations = activeLocations
         <p class="text-gray-600 mb-4">
           Have questions about booking? Need a custom package?
         </p>
-        <a href={`${import.meta.env.BASE_URL}contact`} class="btn-secondary">
-          Contact Us
-        </a>
+        <a href="/contact" class="btn-secondary"> Contact Us </a>
       </div>
     </div>
   </section>
 
-  <!-- Cal.com embed script -->
-  <script is:inline async src="https://app.cal.com/embed/embed.js"></script>
+  <!-- Cal.com embed script with proper loading -->
+  <script>
+    // Initialize Cal.com embed when DOM is ready
+    document.addEventListener('DOMContentLoaded', function () {
+      // Load Cal.com embed script
+      const script = document.createElement('script');
+      script.src = 'https://app.cal.com/embed/embed.js';
+      script.async = true;
+      script.onload = function () {
+        // Script loaded successfully
+        console.log('Cal.com embed script loaded');
+      };
+      script.onerror = function () {
+        console.warn('Failed to load Cal.com embed script');
+      };
+      document.head.appendChild(script);
+    });
+  </script>
 </Layout>

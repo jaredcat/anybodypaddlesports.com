@@ -1,20 +1,19 @@
 import tailwind from '@astrojs/tailwind';
+import vercel from '@astrojs/vercel/serverless';
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind()],
 
-  // GitHub Pages configuration
-  site:
-    process.env.NODE_ENV === 'production'
-      ? 'https://jaredcat.github.io/anybodypaddlesports.com'
-      : 'http://localhost:3000',
-  base:
-    process.env.NODE_ENV === 'production' ? '/anybodypaddlesports.com/' : '',
+  // Use Vercel adapter for serverless functions
+  adapter: vercel(),
 
-  // Output configuration for static site generation
-  output: 'static',
+  // Enable SSR for server-side API calls
+  output: 'server',
+
+  // Site configuration (will be your Vercel domain)
+  site: 'https://anybodypaddlesports.vercel.app', // Update this with your actual Vercel domain
 
   // Build configuration
   build: {
