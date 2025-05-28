@@ -11,7 +11,7 @@ const currentPath = Astro.url.pathname;
   <nav class="container-custom">
     <div class="flex justify-between items-center h-16">
       <div class="flex-shrink-0">
-        <a href="/" class="block">
+        <a href={`${import.meta.env.BASE_URL}`} class="block">
           <img
             src={`${import.meta.env.BASE_URL}Logo-Horizontal-Light-768x213.png`}
             alt={SITE_CONFIG.name}
@@ -23,25 +23,28 @@ const currentPath = Astro.url.pathname;
       <!-- Desktop Navigation -->
       <div class="hidden md:block">
         <div class="ml-10 flex items-baseline space-x-4">
-          <a href="/" class={`nav-link ${currentPath === '/' ? 'active' : ''}`}
-            >Home</a
+          <a
+            href={`${import.meta.env.BASE_URL}`}
+            class={`nav-link ${currentPath === '/' ? 'active' : ''}`}>Home</a
           >
           <a
-            href="/what-to-expect"
+            href={`${import.meta.env.BASE_URL}what-to-expect`}
             class={`nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}
             >What to Expect</a
           >
           <a
-            href="/locations"
+            href={`${import.meta.env.BASE_URL}locations`}
             class={`nav-link ${currentPath === '/locations' ? 'active' : ''}`}
             >Locations</a
           >
           <a
-            href="/contact"
+            href={`${import.meta.env.BASE_URL}contact`}
             class={`nav-link ${currentPath === '/contact' ? 'active' : ''}`}
             >Contact</a
           >
-          <a href="/book" class="btn-primary">Book Now</a>
+          <a href={`${import.meta.env.BASE_URL}book`} class="btn-primary"
+            >Book Now</a
+          >
         </div>
       </div>
 
@@ -64,25 +67,28 @@ const currentPath = Astro.url.pathname;
   <div class="md:hidden hidden" id="mobile-menu">
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
       <a
-        href="/"
+        href={`${import.meta.env.BASE_URL}`}
         class={`mobile-nav-link ${currentPath === '/' ? 'active' : ''}`}>Home</a
       >
       <a
-        href="/what-to-expect"
+        href={`${import.meta.env.BASE_URL}what-to-expect`}
         class={`mobile-nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}
         >What to Expect</a
       >
       <a
-        href="/locations"
+        href={`${import.meta.env.BASE_URL}locations`}
         class={`mobile-nav-link ${currentPath === '/locations' ? 'active' : ''}`}
         >Locations</a
       >
       <a
-        href="/contact"
+        href={`${import.meta.env.BASE_URL}contact`}
         class={`mobile-nav-link ${currentPath === '/contact' ? 'active' : ''}`}
         >Contact</a
       >
-      <a href="/book" class="btn-primary block text-center">Book Now</a>
+      <a
+        href={`${import.meta.env.BASE_URL}book`}
+        class="btn-primary block text-center">Book Now</a
+      >
     </div>
   </div>
 </header>

@@ -12,7 +12,9 @@ let availableEventTypes: any[] = [];
 try {
   const apiKey = import.meta.env.CAL_API_KEY;
   if (apiKey) {
-    const response = await fetch(`https://api.cal.com/v1/event-types?apiKey=${apiKey}`);
+    const response = await fetch(
+      `https://api.cal.com/v1/event-types?apiKey=${apiKey}`,
+    );
     if (response.ok) {
       const data = await response.json();
       availableEventTypes = data.event_types || [];
@@ -26,7 +28,7 @@ try {
 const tourEventsByLocation = new Map();
 const rentalEventsByLocation = new Map();
 
-availableEventTypes.forEach(eventType => {
+availableEventTypes.forEach((eventType) => {
   // Parse location from title (format: "Location - Event Name")
   const titleParts = eventType.title.split(' - ');
   if (titleParts.length >= 2) {
@@ -44,40 +46,47 @@ availableEventTypes.forEach(eventType => {
     targetMap.get(location).push({
       name: eventName,
       calLink: `paddlesports/${eventType.slug}`,
-      type: eventName.toLowerCase().includes('2-hour') || eventName.toLowerCase().includes('full') ? 'primary' : 'secondary'
+      type:
+        eventName.toLowerCase().includes('2-hour') ||
+        eventName.toLowerCase().includes('full')
+          ? 'primary'
+          : 'secondary',
     });
   }
 });
 
 // Generate location data for tours
-const tourLocations = activeLocations.map(location => {
-  const events = tourEventsByLocation.get(location.name) || [];
-  return {
-    location: {
-      name: location.name,
-      slug: location.slug,
-    },
-    eventTypes: events,
-  };
-}).filter(loc => loc.eventTypes.length > 0);
+const tourLocations = activeLocations
+  .map((location) => {
+    const events = tourEventsByLocation.get(location.name) || [];
+    return {
+      location: {
+        name: location.name,
+        slug: location.slug,
+      },
+      eventTypes: events,
+    };
+  })
+  .filter((loc) => loc.eventTypes.length > 0);
 
 // Generate location data for rentals
-const rentalLocations = activeLocations.map(location => {
-  const events = rentalEventsByLocation.get(location.name) || [];
-  return {
-    location: {
-      name: location.name,
-      slug: location.slug,
-    },
-    eventTypes: events,
-  };
-}).filter(loc => loc.eventTypes.length > 0);
+const rentalLocations = activeLocations
+  .map((location) => {
+    const events = rentalEventsByLocation.get(location.name) || [];
+    return {
+      location: {
+        name: location.name,
+        slug: location.slug,
+      },
+      eventTypes: events,
+    };
+  })
+  .filter((loc) => loc.eventTypes.length > 0);
 ---
 
 <Layout
   title="Book Your Adventure - AnyBody Paddlesports"
-  description="Book paddle board tours and equipment rentals with AnyBody Paddlesports. Choose from guided tours or equipment-only rentals."
->
+  description="Book paddle board tours and equipment rentals with AnyBody Paddlesports. Choose from guided tours or equipment-only rentals.">
   <!-- Hero Section -->
   <Hero
     title="Book Your Adventure"
@@ -90,11 +99,14 @@ const rentalLocations = activeLocations.map(location => {
         <!-- Guided Tours -->
         <div class="bg-white rounded-xl shadow-lg p-8">
           <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div
+              class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Icon name="users" size="lg" class="text-white" />
             </div>
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Guided Tours</h2>
-            <p class="text-gray-600">Professional instruction and guided experiences</p>
+            <p class="text-gray-600">
+              Professional instruction and guided experiences
+            </p>
           </div>
 
           <ul class="space-y-3 mb-8">
@@ -118,33 +130,47 @@ const rentalLocations = activeLocations.map(location => {
 
           <!-- Location-based booking options -->
           <div class="space-y-4">
-            {tourLocations.length > 0 ? (
-              tourLocations.map(locationData => (
-                <LocationBookingSection
-                  location={locationData.location}
-                  eventTypes={locationData.eventTypes}
-                />
-              ))
-            ) : (
-              <div class="border-2 border-yellow-200 rounded-lg p-6 bg-yellow-50">
-                <h4 class="font-semibold text-yellow-800 mb-2">🚧 Tours Coming Soon!</h4>
-                <p class="text-yellow-700 text-sm mb-3">
-                  We're setting up our guided tour bookings. Check back soon or contact us directly to arrange a tour.
-                </p>
-                <a href="/contact" class="btn-secondary text-sm">Contact Us</a>
-              </div>
-            )}
+            {
+              tourLocations.length > 0 ? (
+                tourLocations.map((locationData) => (
+                  <LocationBookingSection
+                    location={locationData.location}
+                    eventTypes={locationData.eventTypes}
+                  />
+                ))
+              ) : (
+                <div class="border-2 border-yellow-200 rounded-lg p-6 bg-yellow-50">
+                  <h4 class="font-semibold text-yellow-800 mb-2">
+                    🚧 Tours Coming Soon!
+                  </h4>
+                  <p class="text-yellow-700 text-sm mb-3">
+                    We're setting up our guided tour bookings. Check back soon
+                    or contact us directly to arrange a tour.
+                  </p>
+                  <a
+                    href={`${import.meta.env.BASE_URL}contact`}
+                    class="btn-secondary text-sm">
+                    Contact Us
+                  </a>
+                </div>
+              )
+            }
           </div>
         </div>
 
         <!-- Equipment Rentals -->
         <div class="bg-white rounded-xl shadow-lg p-8">
           <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div
+              class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Icon name="cube" size="lg" class="text-white" />
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Equipment Rentals</h2>
-            <p class="text-gray-600">Rent quality gear for your own adventure</p>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">
+              Equipment Rentals
+            </h2>
+            <p class="text-gray-600">
+              Rent quality gear for your own adventure
+            </p>
           </div>
 
           <ul class="space-y-3 mb-8">
@@ -168,22 +194,31 @@ const rentalLocations = activeLocations.map(location => {
 
           <!-- Location-based rental options -->
           <div class="space-y-4">
-            {rentalLocations.length > 0 ? (
-              rentalLocations.map(locationData => (
-                <LocationBookingSection
-                  location={locationData.location}
-                  eventTypes={locationData.eventTypes}
-                />
-              ))
-            ) : (
-              <div class="border-2 border-yellow-200 rounded-lg p-6 bg-yellow-50">
-                <h4 class="font-semibold text-yellow-800 mb-2">🚧 Rentals Coming Soon!</h4>
-                <p class="text-yellow-700 text-sm mb-3">
-                  We're setting up our equipment rental bookings. Check back soon or contact us directly to arrange a rental.
-                </p>
-                <a href="/contact" class="btn-secondary text-sm">Contact Us</a>
-              </div>
-            )}
+            {
+              rentalLocations.length > 0 ? (
+                rentalLocations.map((locationData) => (
+                  <LocationBookingSection
+                    location={locationData.location}
+                    eventTypes={locationData.eventTypes}
+                  />
+                ))
+              ) : (
+                <div class="border-2 border-yellow-200 rounded-lg p-6 bg-yellow-50">
+                  <h4 class="font-semibold text-yellow-800 mb-2">
+                    🚧 Rentals Coming Soon!
+                  </h4>
+                  <p class="text-yellow-700 text-sm mb-3">
+                    We're setting up our equipment rental bookings. Check back
+                    soon or contact us directly to arrange a rental.
+                  </p>
+                  <a
+                    href={`${import.meta.env.BASE_URL}contact`}
+                    class="btn-secondary text-sm">
+                    Contact Us
+                  </a>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
@@ -192,7 +227,7 @@ const rentalLocations = activeLocations.map(location => {
         <p class="text-gray-600 mb-4">
           Have questions about booking? Need a custom package?
         </p>
-        <a href="/contact" class="btn-secondary">
+        <a href={`${import.meta.env.BASE_URL}contact`} class="btn-secondary">
           Contact Us
         </a>
       </div>
