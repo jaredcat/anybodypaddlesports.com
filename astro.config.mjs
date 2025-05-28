@@ -41,7 +41,7 @@ export default defineConfig({
 
   // Prefetch configuration for better performance
   prefetch: {
-    prefetchAll: true,
+    prefetchAll: false,
     defaultStrategy: 'viewport',
   },
 });

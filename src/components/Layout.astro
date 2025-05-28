@@ -22,6 +22,69 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.png" />
     <link rel="canonical" href={canonicalURL} />
 
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Roboto+Slab:wght@400&family=Poppins:wght@300;400;500;600;700&display=swap"
+    />
+
+    <!-- Load font stylesheets -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Roboto+Slab:wght@400&family=Poppins:wght@300;400;500;600;700&display=swap"
+    />
+
+    <!-- DNS prefetch for third-party services -->
+    <link rel="dns-prefetch" href="https://app.cal.com" />
+    <link rel="dns-prefetch" href="https://api.cal.com" />
+    <link rel="dns-prefetch" href="https://www.google.com" />
+    <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="/Logo-Horizontal-Light-768x213.png" />
+    {
+      Astro.url.pathname === '/' && (
+        <>
+          <link
+            rel="preload"
+            as="video"
+            href="/paddleboard-loop-720p.mp4"
+            type="video/mp4"
+            media="(max-width: 768px)"
+          />
+          <link
+            rel="preload"
+            as="video"
+            href="/paddleboard-loop-1080p.mp4"
+            type="video/mp4"
+            media="(min-width: 769px)"
+          />
+          <link
+            rel="preload"
+            as="image"
+            href="/Tualatin-RIver-Tualatin-Community-Park.jpg"
+          />
+          <link
+            rel="preload"
+            as="image"
+            href="/Anybody-Paddlesports-Sample-Video-poster.png"
+          />
+        </>
+      )
+    }
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
