@@ -1,4 +1,7 @@
 ---
+// Enable server-side rendering for this page only
+export const prerender = false;
+
 import Hero from '@/components/Hero.astro';
 import Icon from '@/components/Icon.astro';
 import Layout from '@/components/Layout.astro';
@@ -108,11 +111,19 @@ const rentalLocations = activeLocations
     };
   })
   .filter((loc) => loc.eventTypes.length > 0);
+
+// Breadcrumbs for SEO
+// const breadcrumbs = [
+//   { name: 'Home', url: '/' },
+//   { name: 'Book Your Adventure', url: '/book' },
+// ];
 ---
 
 <Layout
   title="Book Your Adventure - AnyBody Paddlesports"
-  description="Book paddle board tours and equipment rentals with AnyBody Paddlesports. Choose from guided tours or equipment-only rentals.">
+  description="Book paddle board tours and equipment rentals with AnyBody Paddlesports. Choose from guided tours or equipment-only rentals."
+  keywords="book paddle board tour, paddleboard rental booking, SUP tour reservation, paddle board lessons booking, California water sports booking"
+  schemaType="Service">
   <!-- Hero Section -->
   <Hero
     title="Book Your Adventure"
@@ -123,10 +134,11 @@ const rentalLocations = activeLocations
     <div class="container-custom">
       <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         <!-- Guided Tours -->
-        <div class="bg-white rounded-xl shadow-lg p-8">
+        <article class="bg-white rounded-xl shadow-lg p-8">
           <div class="text-center mb-6">
             <div
-              class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              aria-hidden="true">
               <Icon name="users" size="lg" class="text-white" />
             </div>
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Guided Tours</h2>
@@ -135,7 +147,7 @@ const rentalLocations = activeLocations
             </p>
           </div>
 
-          <ul class="space-y-3 mb-8">
+          <ul class="space-y-3 mb-8" role="list">
             <li class="flex items-center text-gray-700">
               <Icon name="check-solid" size="sm" class="text-green-500 mr-3" />
               Certified instructor included
@@ -180,13 +192,14 @@ const rentalLocations = activeLocations
               )
             }
           </div>
-        </div>
+        </article>
 
         <!-- Equipment Rentals -->
-        <div class="bg-white rounded-xl shadow-lg p-8">
+        <article class="bg-white rounded-xl shadow-lg p-8">
           <div class="text-center mb-6">
             <div
-              class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              aria-hidden="true">
               <Icon name="cube" size="lg" class="text-white" />
             </div>
             <h2 class="text-2xl font-bold text-gray-900 mb-2">
@@ -197,7 +210,7 @@ const rentalLocations = activeLocations
             </p>
           </div>
 
-          <ul class="space-y-3 mb-8">
+          <ul class="space-y-3 mb-8" role="list">
             <li class="flex items-center text-gray-700">
               <Icon name="check-solid" size="sm" class="text-green-500 mr-3" />
               Premium paddle boards
@@ -238,7 +251,7 @@ const rentalLocations = activeLocations
               )
             }
           </div>
-        </div>
+        </article>
       </div>
 
       <div class="text-center mt-12">

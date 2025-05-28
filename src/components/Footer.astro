@@ -35,10 +35,19 @@ import { SITE_CONFIG } from '@/config/site';
 
       <div>
         <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
-        <div class="space-y-2 text-gray-300">
-          <p>📞 {SITE_CONFIG.contact.phone}</p>
-          <p>✉️ {SITE_CONFIG.contact.email}</p>
-          <p>📍 {SITE_CONFIG.contact.address}</p>
+        <div class="space-y-3 text-gray-300">
+          <div class="flex items-start gap-3">
+            <span class="text-lg flex-shrink-0 mt-0.5">📞</span>
+            <span class="break-all">{SITE_CONFIG.contact.phone}</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-lg flex-shrink-0 mt-0.5">✉️</span>
+            <span class="break-all">{SITE_CONFIG.contact.email}</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-lg flex-shrink-0 mt-0.5">📍</span>
+            <span class="break-words">{SITE_CONFIG.contact.address}</span>
+          </div>
         </div>
       </div>
     </div>

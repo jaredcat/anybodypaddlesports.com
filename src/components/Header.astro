@@ -9,11 +9,15 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header
-  class="bg-header-background text-header-text shadow-sm sticky top-0 z-50">
-  <nav class="container-custom">
+  class="bg-header-background text-header-text shadow-sm sticky top-0 z-50"
+  role="banner">
+  <nav class="container-custom" role="navigation" aria-label="Main navigation">
     <div class="flex justify-between items-center h-16">
       <div class="flex-shrink-0">
-        <a href="/" class="block">
+        <a
+          href="/"
+          class="block"
+          aria-label="AnyBody Paddlesports - Go to homepage">
           <Image
             src={logo}
             alt={SITE_CONFIG.name}
@@ -28,40 +32,69 @@ const currentPath = Astro.url.pathname;
 
       <!-- Desktop Navigation -->
       <div class="hidden md:block">
-        <div class="ml-10 flex items-baseline space-x-4">
-          <a href="/" class={`nav-link ${currentPath === '/' ? 'active' : ''}`}
-            >Home</a
-          >
-          <a
-            href="/what-to-expect"
-            class={`nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}
-            data-astro-prefetch>What to Expect</a
-          >
-          <a
-            href="/locations"
-            class={`nav-link ${currentPath === '/locations' ? 'active' : ''}`}
-            data-astro-prefetch>Locations</a
-          >
-          <a
-            href="/contact"
-            class={`nav-link ${currentPath === '/contact' ? 'active' : ''}`}
-            data-astro-prefetch>Contact</a
-          >
-          <a href="/book" class="btn-primary" data-astro-prefetch="viewport"
-            >Book Now</a
-          >
-        </div>
+        <ul class="ml-10 flex items-baseline space-x-4" role="menubar">
+          <li role="none">
+            <a
+              href="/"
+              class={`nav-link ${currentPath === '/' ? 'active' : ''}`}
+              role="menuitem"
+              aria-current={currentPath === '/' ? 'page' : undefined}>
+              Home
+            </a>
+          </li>
+          <li role="none">
+            <a
+              href="/what-to-expect"
+              class={`nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}
+              data-astro-prefetch
+              role="menuitem"
+              aria-current={currentPath === '/what-to-expect'
+                ? 'page'
+                : undefined}>
+              What to Expect
+            </a>
+          </li>
+          <li role="none">
+            <a
+              href="/locations"
+              class={`nav-link ${currentPath === '/locations' ? 'active' : ''}`}
+              data-astro-prefetch
+              role="menuitem"
+              aria-current={currentPath === '/locations' ? 'page' : undefined}>
+              Locations
+            </a>
+          </li>
+          <li role="none">
+            <a
+              href="/contact"
+              class={`nav-link ${currentPath === '/contact' ? 'active' : ''}`}
+              data-astro-prefetch
+              role="menuitem"
+              aria-current={currentPath === '/contact' ? 'page' : undefined}>
+              Contact
+            </a>
+          </li>
+          <li role="none">
+            <a
+              href="/book"
+              class="btn-primary"
+              data-astro-prefetch="viewport"
+              role="menuitem">
+              Book Now
+            </a>
+          </li>
+        </ul>
       </div>
 
       <!-- Mobile menu button -->
       <div class="md:hidden">
         <button
           type="button"
-          class="text-header-text hover:text-primary focus:outline-none focus:text-primary"
+          class="text-header-text hover:text-primary focus:outline-none focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-header-background rounded-md p-2"
           id="mobile-menu-button"
           aria-expanded="false"
-          aria-controls="mobile-menu">
-          <span class="sr-only">Open main menu</span>
+          aria-controls="mobile-menu"
+          aria-label="Open main menu">
           <Icon name="bars-3" />
         </button>
       </div>
@@ -69,39 +102,62 @@ const currentPath = Astro.url.pathname;
   </nav>
 
   <!-- Mobile menu -->
-  <div class="md:hidden hidden" id="mobile-menu">
+  <div
+    class="md:hidden hidden"
+    id="mobile-menu"
+    role="menu"
+    aria-labelledby="mobile-menu-button">
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
       <a
         href="/"
-        class={`mobile-nav-link ${currentPath === '/' ? 'active' : ''}`}>Home</a
-      >
+        class={`mobile-nav-link ${currentPath === '/' ? 'active' : ''}`}
+        role="menuitem"
+        aria-current={currentPath === '/' ? 'page' : undefined}
+        tabindex="-1">
+        Home
+      </a>
       <a
         href="/what-to-expect"
         class={`mobile-nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}
-        data-astro-prefetch>What to Expect</a
-      >
+        data-astro-prefetch
+        role="menuitem"
+        aria-current={currentPath === '/what-to-expect' ? 'page' : undefined}
+        tabindex="-1">
+        What to Expect
+      </a>
       <a
         href="/locations"
         class={`mobile-nav-link ${currentPath === '/locations' ? 'active' : ''}`}
-        data-astro-prefetch>Locations</a
-      >
+        data-astro-prefetch
+        role="menuitem"
+        aria-current={currentPath === '/locations' ? 'page' : undefined}
+        tabindex="-1">
+        Locations
+      </a>
       <a
         href="/contact"
         class={`mobile-nav-link ${currentPath === '/contact' ? 'active' : ''}`}
-        data-astro-prefetch>Contact</a
-      >
+        data-astro-prefetch
+        role="menuitem"
+        aria-current={currentPath === '/contact' ? 'page' : undefined}
+        tabindex="-1">
+        Contact
+      </a>
       <a
         href="/book"
         class="btn-primary block text-center"
-        data-astro-prefetch="viewport">Book Now</a
-      >
+        data-astro-prefetch="viewport"
+        role="menuitem"
+        tabindex="-1">
+        Book Now
+      </a>
     </div>
   </div>
 </header>
 
 <style>
   .nav-link {
-    @apply text-header-text hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors;
+    @apply text-header-text hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-header-background;
   }
 
   .nav-link.active {
@@ -109,7 +165,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .mobile-nav-link {
-    @apply text-gray-800 hover:text-primary-700 block px-3 py-2 rounded-md text-base font-medium;
+    @apply text-gray-800 hover:text-primary-700 block px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
   }
 
   .mobile-nav-link.active {
@@ -118,16 +174,75 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
-  // Mobile menu toggle
+  // Mobile menu toggle with improved accessibility
   document
     .getElementById('mobile-menu-button')
     ?.addEventListener('click', function () {
       const mobileMenu = document.getElementById('mobile-menu');
       const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      const newState = !isExpanded;
 
       if (mobileMenu) {
         mobileMenu.classList.toggle('hidden');
-        this.setAttribute('aria-expanded', (!isExpanded).toString());
+        this.setAttribute('aria-expanded', newState.toString());
+
+        // Manage focus and tabindex for mobile menu items
+        const menuLinks = mobileMenu.querySelectorAll('a[role="menuitem"]');
+        menuLinks.forEach((link) => {
+          link.setAttribute('tabindex', newState ? '0' : '-1');
+        });
+
+        // Focus first menu item when opening
+        if (newState) {
+          const firstMenuItem = mobileMenu.querySelector('a[role="menuitem"]');
+          if (firstMenuItem) {
+            (firstMenuItem as HTMLElement).focus();
+          }
+        }
       }
     });
+
+  // Close mobile menu on escape key
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuButton = document.getElementById('mobile-menu-button');
+
+      if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+        if (menuButton) {
+          menuButton.setAttribute('aria-expanded', 'false');
+          menuButton.focus();
+        }
+
+        // Reset tabindex for menu items
+        const menuLinks = mobileMenu.querySelectorAll('a[role="menuitem"]');
+        menuLinks.forEach((link) => {
+          link.setAttribute('tabindex', '-1');
+        });
+      }
+    }
+  });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', function (event) {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuButton = document.getElementById('mobile-menu-button');
+
+    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+      const target = event.target as Node;
+      if (!mobileMenu.contains(target) && !menuButton?.contains(target)) {
+        mobileMenu.classList.add('hidden');
+        if (menuButton) {
+          menuButton.setAttribute('aria-expanded', 'false');
+        }
+
+        // Reset tabindex for menu items
+        const menuLinks = mobileMenu.querySelectorAll('a[role="menuitem"]');
+        menuLinks.forEach((link) => {
+          link.setAttribute('tabindex', '-1');
+        });
+      }
+    }
+  });
 </script>

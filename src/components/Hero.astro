@@ -99,21 +99,21 @@ if (backgroundImage) {
       <!-- Two-column layout with icon on right -->
       <div class="grid lg:grid-cols-2 gap-12 items-center">
         <div class="text-center lg:text-left">
-          <h1 class="text-4xl md:text-6xl font-bold mb-6">
+          <h1 class="text-4xl text-white md:text-6xl font-bold mb-6">
             {title}
             {subtitle && (
-              <span class="block text-2xl md:text-3xl font-normal mt-2 opacity-90">
+              <span class="block text-2xl md:text-3xl font-normal mt-2 text-white opacity-90">
                 {subtitle}
               </span>
             )}
           </h1>
 
-          <p class="text-xl md:text-2xl mb-8 opacity-90">
+          <p class="text-xl md:text-2xl mb-8 text-white opacity-90">
             {description}
           </p>
 
           {ctaText && ctaLink && (
-            <a href={ctaLink} class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg">
+            <a href={ctaLink} class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600">
               {ctaText}
             </a>
           )}
@@ -128,21 +128,21 @@ if (backgroundImage) {
     ) : (
       // <!-- Centered layout without icon -->
       <div class="text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+        <h1 class="text-4xl text-white md:text-6xl font-bold mb-6">
           {title}
           {subtitle && (
-            <span class="block text-2xl md:text-3xl font-normal mt-2 opacity-90">
+            <span class="block text-2xl md:text-3xl font-normal mt-2 text-white opacity-90">
               {subtitle}
             </span>
           )}
         </h1>
 
-        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white opacity-90">
           {description}
         </p>
 
         {ctaText && ctaLink && (
-          <a href={ctaLink} class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg">
+          <a href={ctaLink} class="inline-block bg-white text-primary-700 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600">
             {ctaText}
           </a>
         )}

@@ -7,15 +7,39 @@ import { getImage } from 'astro:assets';
 import Footer from './Footer.astro';
 import Header from './Header.astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
+import { SITE_CONFIG } from '@/config/site';
 
 export interface Props {
   title: string;
   description?: string;
   image?: string;
+  keywords?: string;
+  articleData?: {
+    publishedTime?: string;
+    modifiedTime?: string;
+    author?: string;
+    section?: string;
+  };
+  breadcrumbs?: Array<{
+    name: string;
+    url: string;
+  }>;
+  schemaType?: 'WebPage' | 'LocalBusiness' | 'Service' | 'Article';
 }
 
-const { title, description, image } = Astro.props;
+const {
+  title,
+  description = SITE_CONFIG.description,
+  image,
+  keywords,
+  articleData,
+  breadcrumbs,
+  schemaType = 'WebPage',
+} = Astro.props;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const defaultImage = new URL('/og-image.jpg', Astro.site);
+const ogImage = image || defaultImage.toString();
 
 // Pre-optimize critical images for preloading
 const optimizedLogo = await getImage({
@@ -42,6 +66,117 @@ if (Astro.url.pathname === '/') {
     quality: 80,
   });
 }
+
+// Generate structured data based on page type
+function generateStructuredData() {
+  const baseData = {
+    '@context': 'https://schema.org',
+    '@type': schemaType === 'LocalBusiness' ? 'LocalBusiness' : schemaType,
+    name: schemaType === 'LocalBusiness' ? SITE_CONFIG.name : title,
+    description: description,
+    url: canonicalURL.toString(),
+  };
+
+  if (schemaType === 'LocalBusiness' || Astro.url.pathname === '/') {
+    return {
+      ...baseData,
+      '@type': 'LocalBusiness',
+      additionalType: ['TourOperator', 'BoatRental', 'SportsActivityLocation'],
+      name: SITE_CONFIG.name,
+      alternateName: ['AnyBody Paddle Sports', 'Anybody Paddlesports'],
+      description: SITE_CONFIG.description,
+      telephone: SITE_CONFIG.contact.phone,
+      email: SITE_CONFIG.contact.email,
+      address: {
+        '@type': 'PostalAddress',
+        addressRegion: 'CA',
+        addressCountry: 'US',
+        addressLocality: 'Los Angeles Area',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: '34.0522',
+        longitude: '-118.2437',
+      },
+      areaServed: [
+        {
+          '@type': 'State',
+          name: 'California',
+        },
+        {
+          '@type': 'City',
+          name: 'Los Angeles',
+        },
+      ],
+      serviceType: [
+        'Paddle Board Tours',
+        'Paddle Board Rentals',
+        'Water Sports Instruction',
+        'Recreational Activities',
+      ],
+      priceRange: '$$',
+      currenciesAccepted: 'USD',
+      paymentAccepted: 'Cash, Credit Card',
+      openingHours: 'Mo,Tu,We,Th,Fr,Sa,Su',
+      sameAs: [SITE_CONFIG.social.facebook, SITE_CONFIG.social.instagram],
+      logo: new URL(optimizedLogo.src, Astro.site).toString(),
+      image: ogImage,
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Paddle Board Services',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Guided Paddle Board Tours',
+              description:
+                'Professional guided paddle board tours with certified instructors',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Product',
+              name: 'Paddle Board Equipment Rental',
+              description: 'High-quality paddle board equipment rentals',
+            },
+          },
+        ],
+      },
+      potentialAction: {
+        '@type': 'ReserveAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: new URL('/book', Astro.site).toString(),
+        },
+        result: {
+          '@type': 'Reservation',
+          name: 'Paddle Board Booking',
+        },
+      },
+    };
+  }
+
+  if (breadcrumbs && breadcrumbs.length > 0) {
+    const breadcrumbList = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((breadcrumb, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: breadcrumb.name,
+        item: new URL(breadcrumb.url, Astro.site).toString(),
+      })),
+    };
+
+    return [baseData, breadcrumbList];
+  }
+
+  return baseData;
+}
+
+const structuredData = generateStructuredData();
 ---
 
 <!doctype html>
@@ -50,8 +185,17 @@ if (Astro.url.pathname === '/') {
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <meta name="author" content={SITE_CONFIG.name} />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="canonical" href={canonicalURL} />
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap.xml" />
 
     <!-- Preload critical fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -117,24 +261,129 @@ if (Astro.url.pathname === '/') {
     }
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:type" content={articleData ? 'article' : 'website'} />
+    <meta property="og:site_name" content={SITE_CONFIG.name} />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={`${title} - ${SITE_CONFIG.name}`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    {
+      articleData && (
+        <>
+          <meta
+            property="article:published_time"
+            content={articleData.publishedTime}
+          />
+          {articleData.modifiedTime && (
+            <meta
+              property="article:modified_time"
+              content={articleData.modifiedTime}
+            />
+          )}
+          {articleData.author && (
+            <meta property="article:author" content={articleData.author} />
+          )}
+          {articleData.section && (
+            <meta property="article:section" content={articleData.section} />
+          )}
+        </>
+      )
+    }
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={image} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@anybodypaddlesports" />
+    <meta name="twitter:creator" content="@anybodypaddlesports" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={`${title} - ${SITE_CONFIG.name}`} />
+
+    <!-- Structured Data -->
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
+
+    <!-- Additional Local Business Schema for contact pages -->
+    {
+      Astro.url.pathname === '/contact' && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ContactPage',
+            name: 'Contact ' + SITE_CONFIG.name,
+            description:
+              'Get in touch with ' +
+              SITE_CONFIG.name +
+              ' for paddle board tours and rentals',
+            mainEntity: {
+              '@type': 'LocalBusiness',
+              name: SITE_CONFIG.name,
+              telephone: SITE_CONFIG.contact.phone,
+              email: SITE_CONFIG.contact.email,
+            },
+          })}
+        />
+      )
+    }
 
     <title>{title}</title>
   </head>
   <body class="bg-white">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <Header />
-    <main>
+
+    <!-- Breadcrumb navigation for SEO and accessibility -->
+    {
+      breadcrumbs && breadcrumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="bg-gray-50 border-b">
+          <div class="container-custom py-3">
+            <ol class="flex items-center space-x-2 text-sm">
+              {breadcrumbs.map((breadcrumb, index) => (
+                <li class="flex items-center">
+                  {index > 0 && (
+                    <svg
+                      class="w-4 h-4 text-gray-400 mx-2"
+                      fill="currentColor"
+                      viewBox="0 0 20 20">
+                      <path
+                        fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  )}
+                  {index === breadcrumbs.length - 1 ? (
+                    <span class="text-gray-900 font-medium" aria-current="page">
+                      {breadcrumb.name}
+                    </span>
+                  ) : (
+                    <a
+                      href={breadcrumb.url}
+                      class="text-primary-600 hover:text-primary-700 transition-colors">
+                      {breadcrumb.name}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </nav>
+      )
+    }
+
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <Footer />
@@ -189,3 +438,13 @@ if (Astro.url.pathname === '/') {
     </script>
   </body>
 </html>
+
+<style>
+  .skip-link {
+    @apply absolute top-0 left-0 bg-primary-600 text-white px-4 py-2 z-50 transform -translate-y-full transition-transform;
+  }
+
+  .skip-link:focus {
+    @apply translate-y-0;
+  }
+</style>

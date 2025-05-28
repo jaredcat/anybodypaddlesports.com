@@ -13,6 +13,6 @@ export const SITE_CONFIG = {
   social: {
     facebook: 'https://www.facebook.com/profile.php?id=100064883417806',
     instagram: 'https://www.instagram.com/anybodypaddlesports/',
-    youtube: '#',
+    youtube: '',
   },
 } as const;
