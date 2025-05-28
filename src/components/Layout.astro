@@ -6,7 +6,7 @@ import '@/styles/global.css';
 import { getImage } from 'astro:assets';
 import Footer from './Footer.astro';
 import Header from './Header.astro';
-import SpeedInsights from './SpeedInsights.astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 
 export interface Props {
   title: string;
@@ -56,32 +56,33 @@ if (Astro.url.pathname === '/') {
     <!-- Preload critical fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Only load essential font weights for better performance -->
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Roboto+Slab:wght@400&family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
     />
 
-    <!-- Load font stylesheets -->
+    <!-- Load font stylesheets with font-display: swap -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Roboto+Slab:wght@400&family=Poppins:wght@300;400;500;600;700&display=swap"
-    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      /></noscript
+    >
 
     <!-- DNS prefetch for third-party services -->
     <link rel="dns-prefetch" href="https://app.cal.com" />
     <link rel="dns-prefetch" href="https://api.cal.com" />
     <link rel="dns-prefetch" href="https://www.google.com" />
     <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+    <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
 
     <!-- Preload critical optimized images -->
     <link rel="preload" as="image" href={optimizedLogo.src} />
@@ -108,6 +109,13 @@ if (Astro.url.pathname === '/') {
       )
     }
 
+    <!-- Preload Cal.com script for booking page -->
+    {
+      Astro.url.pathname === '/book' && (
+        <link rel="modulepreload" href="https://app.cal.com/embed/embed.js" />
+      )
+    }
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
@@ -131,5 +139,53 @@ if (Astro.url.pathname === '/') {
     </main>
     <Footer />
     <SpeedInsights />
+
+    <!-- Performance monitoring -->
+    <script>
+      // Track Core Web Vitals
+      function trackWebVitals() {
+        try {
+          // Track LCP (Largest Contentful Paint)
+          new PerformanceObserver((entryList) => {
+            const entries = entryList.getEntries();
+            const lastEntry = entries[entries.length - 1];
+            console.log('LCP:', lastEntry.startTime);
+          }).observe({ type: 'largest-contentful-paint', buffered: true });
+
+          // Track FID (First Input Delay)
+          new PerformanceObserver((entryList) => {
+            for (const entry of entryList.getEntries()) {
+              const fidEntry = entry as any;
+              console.log(
+                'FID:',
+                fidEntry.processingStart - fidEntry.startTime,
+              );
+            }
+          }).observe({ type: 'first-input', buffered: true });
+
+          // Track CLS (Cumulative Layout Shift)
+          let clsValue = 0;
+          new PerformanceObserver((entryList) => {
+            for (const entry of entryList.getEntries()) {
+              const clsEntry = entry as any;
+              if (!clsEntry.hadRecentInput) {
+                clsValue += clsEntry.value;
+                console.log('CLS:', clsValue);
+              }
+            }
+          }).observe({ type: 'layout-shift', buffered: true });
+        } catch (e) {
+          // Gracefully handle unsupported browsers
+          console.log('Web Vitals not supported');
+        }
+      }
+
+      // Run after page load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', trackWebVitals);
+      } else {
+        trackWebVitals();
+      }
+    </script>
   </body>
 </html>
