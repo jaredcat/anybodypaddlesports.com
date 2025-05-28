@@ -5,7 +5,9 @@ import { getLocationNames } from '@/config/locations.ts';
 const locationNames = getLocationNames();
 ---
 
-<Layout title="Cal.com Event Manager - Admin" description="Manage tour and rental event types">
+<Layout
+  title="Cal.com Event Manager - Admin"
+  description="Manage tour and rental event types">
   <section class="section-padding">
     <div class="container-custom">
       <div class="max-w-6xl mx-auto">
@@ -19,9 +21,11 @@ const locationNames = getLocationNames();
           <label class="block text-sm font-medium mb-2">Location Filter</label>
           <select id="locationSelect" class="w-full p-3 border rounded-lg">
             <option value="">All Locations</option>
-            {locationNames.map(location => (
-              <option value={location}>{location}</option>
-            ))}
+            {
+              locationNames.map((location) => (
+                <option value={location}>{location}</option>
+              ))
+            }
           </select>
         </div>
 
@@ -32,17 +36,27 @@ const locationNames = getLocationNames();
           <form id="eventTypeForm" class="grid md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium mb-2">Location</label>
-              <select id="eventLocation" class="w-full p-3 border rounded-lg" required>
+              <select
+                id="eventLocation"
+                class="w-full p-3 border rounded-lg"
+                required>
                 <option value="">Select Location</option>
-                {locationNames.map(location => (
-                  <option value={location}>{location}</option>
-                ))}
+                {
+                  locationNames.map((location) => (
+                    <option value={location}>{location}</option>
+                  ))
+                }
               </select>
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-2">Event Name</label>
-              <input type="text" id="eventName" class="w-full p-3 border rounded-lg" placeholder="2-Hour Guided Tour">
+              <input
+                type="text"
+                id="eventName"
+                class="w-full p-3 border rounded-lg"
+                placeholder="2-Hour Guided Tour"
+              />
             </div>
 
             <div>
@@ -56,33 +70,76 @@ const locationNames = getLocationNames();
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Duration (minutes)</label>
-              <input type="number" id="duration" class="w-full p-3 border rounded-lg" value="60">
+              <label class="block text-sm font-medium mb-2"
+                >Duration (minutes)</label
+              >
+              <input
+                type="number"
+                id="duration"
+                class="w-full p-3 border rounded-lg"
+                value="60"
+              />
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-2">Price ($)</label>
-              <input type="number" id="price" class="w-full p-3 border rounded-lg" step="0.01">
+              <input
+                type="number"
+                id="price"
+                class="w-full p-3 border rounded-lg"
+                step="0.01"
+              />
             </div>
 
             <div class="md:col-span-2">
               <label class="block text-sm font-medium mb-2">Description</label>
-              <textarea id="description" class="w-full p-3 border rounded-lg h-24" placeholder="Describe the experience..."></textarea>
+              <textarea
+                id="description"
+                class="w-full p-3 border rounded-lg h-24"
+                placeholder="Describe the experience..."></textarea>
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Max Participants</label>
-              <input type="number" id="maxParticipants" class="w-full p-3 border rounded-lg" value="6">
+              <label class="block text-sm font-medium mb-2"
+                >Max Participants</label
+              >
+              <input
+                type="number"
+                id="maxParticipants"
+                class="w-full p-3 border rounded-lg"
+                value="6"
+              />
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Advance Booking (days)</label>
-              <input type="number" id="advanceBooking" class="w-full p-3 border rounded-lg" value="1">
+              <label class="block text-sm font-medium mb-2"
+                >Advance Booking (days)</label
+              >
+              <input
+                type="number"
+                id="advanceBooking"
+                class="w-full p-3 border rounded-lg"
+                value="1"
+              />
             </div>
 
             <div class="md:col-span-2">
-              <button type="submit" class="btn-primary">Create Event Type</button>
-              <button type="button" id="updateBtn" class="btn-secondary ml-4" style="display: none;">Update Event Type</button>
+              <button type="submit" class="btn-primary"
+                >Create Event Type</button
+              >
+              <button
+                type="button"
+                id="updateBtn"
+                class="btn-secondary ml-4"
+                style="display: none;">Update Event Type</button
+              >
+              <button
+                type="button"
+                id="cancelEditBtn"
+                onclick="manager.resetForm()"
+                class="btn-secondary ml-4"
+                style="display: none;">Cancel Edit</button
+              >
             </div>
           </form>
         </div>
@@ -101,7 +158,8 @@ const locationNames = getLocationNames();
   <script is:inline type="module" define:vars={{ locationNames }}>
     class CalEventManager {
       constructor() {
-        this.baseUrl = '/api/cal';
+        this.calApiBase = 'https://api.cal.com/v1';
+        this.apiKey = null;
         this.locationFilter = '';
         this.editingEventId = null;
         this.allEventTypes = [];
@@ -113,35 +171,88 @@ const locationNames = getLocationNames();
       }
 
       initEventListeners() {
-        document.getElementById('locationSelect').addEventListener('change', (e) => {
-          this.locationFilter = e.target.value;
-          this.filterEventTypes();
-        });
+        document
+          .getElementById('locationSelect')
+          .addEventListener('change', (e) => {
+            this.locationFilter = e.target.value;
+            this.filterEventTypes();
+          });
 
-        document.getElementById('eventTypeForm').addEventListener('submit', (e) => {
-          e.preventDefault();
-          this.editingEventId ? this.updateEventType() : this.createEventType();
-        });
+        document
+          .getElementById('eventTypeForm')
+          .addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.editingEventId
+              ? this.updateEventType()
+              : this.createEventType();
+          });
+
+        // Add direct listener for Update button
+        const updateBtn = document.getElementById('updateBtn');
+        console.log('Update button found:', updateBtn);
+
+        if (updateBtn) {
+          updateBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Update button clicked directly');
+            this.updateEventType();
+          });
+        } else {
+          console.error('Update button not found!');
+        }
       }
 
       async apiCall(endpoint, method = 'GET', data = null) {
+        if (!this.apiKey) {
+          throw new Error(
+            'API key is required. Please set CAL_API_KEY environment variable.',
+          );
+        }
+
+        const url = `${this.calApiBase}${endpoint}${endpoint.includes('?') ? '&' : '?'}apiKey=${this.apiKey}`;
         const options = {
           method,
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         };
 
-        if (data) {
+        if (data && method !== 'GET') {
           options.body = JSON.stringify(data);
         }
 
         try {
-          const response = await fetch(`${this.baseUrl}${endpoint}`, options);
+          console.log(
+            `Making ${method} request to Cal.com API:`,
+            url.replace(this.apiKey, 'HIDDEN'),
+            data ? { data } : '',
+          );
+          const response = await fetch(url, options);
+
           if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ error: response.statusText }));
-            throw new Error(errorData.error || `API call failed: ${response.statusText}`);
+            const errorText = await response.text();
+            let errorMessage;
+
+            try {
+              const errorData = JSON.parse(errorText);
+              errorMessage =
+                errorData.message || errorData.error || response.statusText;
+            } catch {
+              errorMessage = errorText || response.statusText;
+            }
+
+            console.error('Cal.com API Error Details:', {
+              status: response.status,
+              statusText: response.statusText,
+              errorText: errorText,
+              endpoint: url.replace(this.apiKey, 'HIDDEN'),
+              method,
+              data,
+            });
+
+            throw new Error(errorMessage);
           }
+
           return await response.json();
         } catch (error) {
           console.error('API Error:', error);
@@ -159,31 +270,49 @@ const locationNames = getLocationNames();
             this.loadEventTypes();
           }
         } catch (error) {
+          console.error('Create event type error:', error);
           alert('Failed to create event type: ' + error.message);
         }
       }
 
       async updateEventType() {
+        console.log('updateEventType called, editing ID:', this.editingEventId);
+
         try {
           const formData = this.getFormData();
-          formData.id = this.editingEventId;
-          const result = await this.apiCall('/event-types', 'PATCH', formData);
+          console.log('Update form data:', formData);
+
+          const result = await this.apiCall(
+            `/event-types/${this.editingEventId}`,
+            'PATCH',
+            formData,
+          );
+
+          console.log('Update result:', result);
+
           if (result) {
             alert('Event type updated successfully!');
             this.resetForm();
             this.loadEventTypes();
+          } else {
+            console.warn('Update returned no result');
+            alert('Update may have failed - please check the event type list');
           }
         } catch (error) {
+          console.error('Update event type error:', error);
           alert('Failed to update event type: ' + error.message);
         }
       }
 
       async deleteEventType(eventId) {
-        if (!confirm('Are you sure you want to delete this event type?')) return;
+        if (!confirm('Are you sure you want to delete this event type?'))
+          return;
 
         try {
-          const params = new URLSearchParams({ id: eventId });
-          const result = await this.apiCall(`/event-types?${params}`, 'DELETE');
+          const result = await this.apiCall(
+            `/event-types/${eventId}`,
+            'DELETE',
+          );
           if (result) {
             alert('Event type deleted successfully!');
             this.loadEventTypes();
@@ -194,48 +323,103 @@ const locationNames = getLocationNames();
       }
 
       async checkApiStatus() {
+        // For static sites, we need to ask the user for their API key
+        if (!this.apiKey) {
+          this.apiKey = localStorage.getItem('cal_api_key');
+
+          if (!this.apiKey) {
+            const userApiKey = prompt(
+              'Please enter your Cal.com API key (get it from https://app.cal.com/settings/security):',
+            );
+            if (userApiKey) {
+              this.apiKey = userApiKey.trim();
+              localStorage.setItem('cal_api_key', this.apiKey);
+            } else {
+              this.showApiStatus(
+                'warning',
+                '⚠️ Cal.com API key required. Please refresh and enter your API key.',
+              );
+              return;
+            }
+          }
+        }
+
         try {
           await this.apiCall('/event-types');
-          this.showApiStatus('success', '✅ Cal.com API connected successfully');
+          this.showApiStatus(
+            'success',
+            '✅ Cal.com API connected successfully',
+          );
         } catch (error) {
-          if (error.message.includes('API key is required')) {
-            this.showApiStatus('warning', '⚠️ Cal.com API key not configured. Please set CAL_API_KEY environment variable.');
+          if (
+            error.message.includes('API key') ||
+            error.message.includes('Unauthorized')
+          ) {
+            // Clear stored API key if it's invalid
+            localStorage.removeItem('cal_api_key');
+            this.apiKey = null;
+            this.showApiStatus(
+              'warning',
+              '⚠️ Invalid API key. Please refresh and enter a valid Cal.com API key.',
+            );
           } else {
-            this.showApiStatus('error', `❌ Cal.com API error: ${error.message}`);
+            this.showApiStatus(
+              'error',
+              `❌ Cal.com API error: ${error.message}`,
+            );
           }
         }
       }
 
       showApiStatus(type, message) {
         const statusDiv = document.getElementById('apiStatus');
-        const bgColor = type === 'success' ? 'bg-green-100 text-green-700' :
-                       type === 'warning' ? 'bg-yellow-100 text-yellow-700' :
-                       'bg-red-100 text-red-700';
+        const bgColor =
+          type === 'success'
+            ? 'bg-green-100 text-green-700'
+            : type === 'warning'
+              ? 'bg-yellow-100 text-yellow-700'
+              : 'bg-red-100 text-red-700';
 
         statusDiv.innerHTML = `
           <div class="rounded-lg p-4 ${bgColor}">
             <p class="text-sm font-medium">${message}</p>
-            ${type === 'warning' ? `
+            ${
+              type === 'warning'
+                ? `
               <p class="text-xs mt-2">
                 Get your API key from: <a href="https://app.cal.com/settings/security" target="_blank" class="underline">Cal.com Settings > Security</a>
               </p>
-            ` : ''}
+              <button onclick="manager.clearApiKey()" class="mt-2 text-xs bg-yellow-200 px-2 py-1 rounded">Reset API Key</button>
+            `
+                : ''
+            }
           </div>
         `;
       }
 
+      clearApiKey() {
+        localStorage.removeItem('cal_api_key');
+        this.apiKey = null;
+        location.reload();
+      }
+
       async loadEventTypes() {
+        if (!this.apiKey) return;
+
         try {
           console.log('Loading event types...');
           const result = await this.apiCall('/event-types');
           console.log('API result:', result);
 
-          if (result && result.data && result.data.event_types) {
-            console.log('Found event types:', result.data.event_types);
-            this.allEventTypes = result.data.event_types;
+          if (result && result.event_types) {
+            console.log('Found event types:', result.event_types);
+            this.allEventTypes = result.event_types;
             this.filterEventTypes();
           } else {
-            console.log('No event types found or unexpected response structure:', result);
+            console.log(
+              'No event types found or unexpected response structure:',
+              result,
+            );
             this.renderEventTypes([]);
           }
         } catch (error) {
@@ -247,8 +431,8 @@ const locationNames = getLocationNames();
       filterEventTypes() {
         let filtered = this.allEventTypes;
         if (this.locationFilter) {
-          filtered = this.allEventTypes.filter(eventType =>
-            eventType.title.startsWith(this.locationFilter + ' -')
+          filtered = this.allEventTypes.filter((eventType) =>
+            eventType.title.startsWith(this.locationFilter + ' -'),
           );
         }
         this.renderEventTypes(filtered);
@@ -257,31 +441,69 @@ const locationNames = getLocationNames();
       getFormData() {
         const location = document.getElementById('eventLocation').value;
         const eventName = document.getElementById('eventName').value;
-        const fullTitle = `${location} - ${eventName}`;
+        const duration = document.getElementById('duration').value;
+        const price = document.getElementById('price').value;
+        const description = document.getElementById('description').value;
+        const maxParticipants =
+          document.getElementById('maxParticipants').value;
+        const advanceBooking = document.getElementById('advanceBooking').value;
 
-        return {
+        // Validation
+        if (!location) {
+          throw new Error('Location is required');
+        }
+        if (!eventName) {
+          throw new Error('Event name is required');
+        }
+        if (!duration || duration <= 0) {
+          throw new Error('Duration must be a positive number');
+        }
+
+        const fullTitle = `${location} - ${eventName}`;
+        const slug = fullTitle
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, '');
+
+        const formData = {
           title: fullTitle,
-          slug: fullTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-          length: parseInt(document.getElementById('duration').value),
-          description: document.getElementById('description').value,
-          price: parseFloat(document.getElementById('price').value) * 100, // Convert to cents
-          currency: 'USD',
-          seatsPerTimeSlot: parseInt(document.getElementById('maxParticipants').value),
-          minimumBookingNotice: parseInt(document.getElementById('advanceBooking').value) * 24 * 60, // Convert to minutes
-          locations: [{ type: 'inPerson', address: `${location} - Location details will be provided upon booking` }]
+          slug: slug,
+          length: parseInt(duration),
+          description: description || '',
+          seatsPerTimeSlot: parseInt(maxParticipants) || 6,
+          minimumBookingNotice: parseInt(advanceBooking) * 24 * 60, // Convert to minutes
+          locations: [
+            {
+              type: 'inPerson',
+              address: `${location} - Location details will be provided upon booking`,
+            },
+          ],
         };
+
+        // Only add price if it's provided and greater than 0
+        if (price && parseFloat(price) > 0) {
+          formData.price = Math.round(parseFloat(price) * 100); // Convert to cents
+          formData.currency = 'USD';
+        }
+
+        console.log('Form data being sent:', formData);
+        return formData;
       }
 
       renderEventTypes(eventTypes) {
         const container = document.getElementById('eventTypesList');
         container.innerHTML = '';
 
-        eventTypes.forEach(eventType => {
+        eventTypes.forEach((eventType) => {
           const eventDiv = document.createElement('div');
-          eventDiv.className = 'border rounded-lg p-4 flex justify-between items-center';
+          eventDiv.className =
+            'border rounded-lg p-4 flex justify-between items-center';
 
           // Handle price display - Cal.com returns price in cents for paid events, 0 for free
-          const priceDisplay = eventType.price > 0 ? `$${(eventType.price / 100).toFixed(2)}` : 'Free';
+          const priceDisplay =
+            eventType.price > 0
+              ? `$${(eventType.price / 100).toFixed(2)}`
+              : 'Free';
 
           eventDiv.innerHTML = `
             <div>
@@ -299,28 +521,123 @@ const locationNames = getLocationNames();
         });
 
         if (eventTypes.length === 0) {
-          container.innerHTML = '<p class="text-gray-500 text-center py-8">No event types found. Create your first event type above.</p>';
+          container.innerHTML =
+            '<p class="text-gray-500 text-center py-8">No event types found. Create your first event type above.</p>';
         }
       }
 
       editEventType(eventId) {
-        // Load event type data into form for editing
+        // Debug logging
+        console.log('editEventType called with ID:', eventId);
+        console.log('Available event types:', this.allEventTypes);
+        console.log(
+          'Available IDs:',
+          this.allEventTypes.map((et) => et.id),
+        );
+
+        // Find the event type in our loaded data (handle both string and number IDs)
+        const eventType = this.allEventTypes.find(
+          (et) =>
+            et.id === eventId ||
+            et.id === parseInt(eventId) ||
+            et.id === String(eventId),
+        );
+
+        if (!eventType) {
+          console.error('Event type not found!', {
+            searchingForId: eventId,
+            searchingForIdType: typeof eventId,
+            availableIds: this.allEventTypes.map((et) => ({
+              id: et.id,
+              type: typeof et.id,
+              title: et.title,
+            })),
+          });
+          alert('Event type not found!');
+          return;
+        }
+
+        console.log('Editing event type:', eventType);
+
+        // Parse the title to extract location and event name
+        const titleParts = eventType.title.split(' - ');
+        const location = titleParts[0];
+        const eventName = titleParts.slice(1).join(' - ');
+
+        // Load data into form fields
+        document.getElementById('eventLocation').value = location;
+        document.getElementById('eventName').value = eventName;
+        document.getElementById('duration').value = eventType.length;
+        document.getElementById('description').value =
+          eventType.description || '';
+        document.getElementById('maxParticipants').value =
+          eventType.seatsPerTimeSlot || 6;
+
+        // Convert minutes back to days for advance booking
+        const advanceBookingDays = Math.round(
+          (eventType.minimumBookingNotice || 1440) / (24 * 60),
+        );
+        document.getElementById('advanceBooking').value = advanceBookingDays;
+
+        // Handle price - convert from cents to dollars
+        if (eventType.price && eventType.price > 0) {
+          document.getElementById('price').value = (
+            eventType.price / 100
+          ).toFixed(2);
+        } else {
+          document.getElementById('price').value = '';
+        }
+
+        // Set editing mode
         this.editingEventId = eventId;
-        // Implementation would load the specific event type data
+
+        // Switch button visibility
         const updateBtn = document.getElementById('updateBtn');
         if (updateBtn) updateBtn.style.display = 'inline-block';
         const submitBtn = document.querySelector('button[type="submit"]');
         if (submitBtn) submitBtn.style.display = 'none';
+        const cancelBtn = document.getElementById('cancelEditBtn');
+        if (cancelBtn) cancelBtn.style.display = 'inline-block';
+
+        // Scroll to form
+        document.getElementById('eventTypeForm').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+
+        // Update form title to indicate editing
+        const formTitle = document
+          .querySelector('#eventTypeForm')
+          .closest('.bg-white')
+          .querySelector('h2');
+        if (formTitle) {
+          formTitle.textContent = `Edit Event Type: ${eventType.title}`;
+        }
       }
 
       resetForm() {
         const form = document.getElementById('eventTypeForm');
         if (form && form.reset) form.reset();
+
+        // Clear editing state
         this.editingEventId = null;
+
+        // Switch button visibility back to create mode
         const updateBtn = document.getElementById('updateBtn');
         if (updateBtn) updateBtn.style.display = 'none';
         const submitBtn = document.querySelector('button[type="submit"]');
         if (submitBtn) submitBtn.style.display = 'inline-block';
+        const cancelBtn = document.getElementById('cancelEditBtn');
+        if (cancelBtn) cancelBtn.style.display = 'none';
+
+        // Reset form title
+        const formTitle = document
+          .querySelector('#eventTypeForm')
+          .closest('.bg-white')
+          .querySelector('h2');
+        if (formTitle) {
+          formTitle.textContent = 'Create/Edit Event Type';
+        }
       }
     }
 
