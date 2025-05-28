@@ -8,9 +8,9 @@ export default defineConfig({
   // GitHub Pages configuration
   site:
     process.env.NODE_ENV === 'production'
-      ? 'https://jaredcat.github.io/anybodypaddlesports'
+      ? 'https://jaredcat.github.io/anybodypaddlesports.com'
       : 'http://localhost:3000',
-  base: process.env.NODE_ENV === 'production' ? '/anybodypaddlesports' : '',
+  base: process.env.NODE_ENV === 'production' ? '/anybodypaddlesports.com' : '',
 
   // Output configuration for static site generation
   output: 'static',
