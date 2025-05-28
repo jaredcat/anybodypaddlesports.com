@@ -29,19 +29,21 @@ const currentPath = Astro.url.pathname;
           <a
             href="/what-to-expect"
             class={`nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}
-            >What to Expect</a
+            data-astro-prefetch>What to Expect</a
           >
           <a
             href="/locations"
             class={`nav-link ${currentPath === '/locations' ? 'active' : ''}`}
-            >Locations</a
+            data-astro-prefetch>Locations</a
           >
           <a
             href="/contact"
             class={`nav-link ${currentPath === '/contact' ? 'active' : ''}`}
-            >Contact</a
+            data-astro-prefetch>Contact</a
           >
-          <a href="/book" class="btn-primary">Book Now</a>
+          <a href="/book" class="btn-primary" data-astro-prefetch="viewport"
+            >Book Now</a
+          >
         </div>
       </div>
 
@@ -70,19 +72,23 @@ const currentPath = Astro.url.pathname;
       <a
         href="/what-to-expect"
         class={`mobile-nav-link ${currentPath === '/what-to-expect' ? 'active' : ''}`}
-        >What to Expect</a
+        data-astro-prefetch>What to Expect</a
       >
       <a
         href="/locations"
         class={`mobile-nav-link ${currentPath === '/locations' ? 'active' : ''}`}
-        >Locations</a
+        data-astro-prefetch>Locations</a
       >
       <a
         href="/contact"
         class={`mobile-nav-link ${currentPath === '/contact' ? 'active' : ''}`}
-        >Contact</a
+        data-astro-prefetch>Contact</a
       >
-      <a href="/book" class="btn-primary block text-center">Book Now</a>
+      <a
+        href="/book"
+        class="btn-primary block text-center"
+        data-astro-prefetch="viewport">Book Now</a
+      >
     </div>
   </div>
 </header>
@@ -93,7 +99,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .nav-link.active {
-    @apply text-primary border-b-2 border-primary;
+    @apply text-accent border-b-2 border-primary;
   }
 
   .mobile-nav-link {
@@ -101,7 +107,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .mobile-nav-link.active {
-    @apply text-primary-700 bg-primary-50;
+    @apply text-accent-700 bg-primary-50;
   }
 </style>
 

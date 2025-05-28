@@ -15,6 +15,8 @@ export interface Props {
 }
 
 const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVideo, backgroundVideoLocal, backgroundImage } = Astro.props;
+
+const isMainLogo = Astro.url.pathname === '/';
 ---
 
 <section class="relative bg-gradient-to-br from-primary-600 to-accent-600 text-white overflow-hidden flex items-center">
@@ -30,7 +32,7 @@ const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVide
         preload="auto"
       >
         <source src={`${backgroundVideoLocal}-720p.mp4`} type="video/mp4" media="(max-width: 768px)" />
-        <source src={`${backgroundVideoLocal}-optimized.mp4`} type="video/mp4" />
+        <source src={`${backgroundVideoLocal}-1080p.mp4`} type="video/mp4" />
       </video>
     </div>
   )}
@@ -97,8 +99,8 @@ const { title, subtitle, description, ctaText, ctaLink, iconName, backgroundVide
         </div>
 
         <div class="flex justify-center lg:justify-end">
-          <div class="bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white border-opacity-30" style="width: 400px; height: 400px;">
-            <Icon name={iconName} size="hero" class="text-white drop-shadow-lg" />
+          <div class="bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white border-opacity-30" style={isMainLogo ? 'width: 400px; height: 400px;' : 'width: 300px; height: 300px;'}>
+              <Icon name={iconName} size="hero" class="text-white drop-shadow-lg" style={isMainLogo ? 'width: 300px; height: 300px;' : ''} />
           </div>
         </div>
       </div>

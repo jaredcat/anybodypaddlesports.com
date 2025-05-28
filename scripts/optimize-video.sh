@@ -20,19 +20,19 @@ echo "Output name: $OUTPUT_NAME"
 echo "Creating optimized 1080p version..."
 ffmpeg -i "$INPUT" \
   -vcodec libx264 \
-  -crf 25 \
+  -crf 27 \
   -preset fast \
   -vf "scale=1920:1080" \
   -an \
   -movflags +faststart \
   -pix_fmt yuv420p \
-  "$OUTPUT_DIR/$OUTPUT_NAME-optimized.mp4"
+  "$OUTPUT_DIR/$OUTPUT_NAME-1080p.mp4"
 
 # Create 720p version for mobile
 echo "Creating 720p version for mobile..."
 ffmpeg -i "$INPUT" \
   -vcodec libx264 \
-  -crf 28 \
+  -crf 29 \
   -preset fast \
   -vf "scale=1280:720" \
   -an \
@@ -42,8 +42,8 @@ ffmpeg -i "$INPUT" \
 
 echo "Video optimization complete!"
 echo "Files created:"
-echo "- $OUTPUT_DIR/$OUTPUT_NAME-optimized.mp4 (1080p, ~2MB)"
-echo "- $OUTPUT_DIR/$OUTPUT_NAME-720p.mp4 (720p, ~800KB)"
+echo "- $OUTPUT_DIR/$OUTPUT_NAME-1080p.mp4 (1080p)"
+echo "- $OUTPUT_DIR/$OUTPUT_NAME-720p.mp4 (720p)"
 echo ""
 echo "To use in Hero component:"
 echo "backgroundVideoLocal=\"/$OUTPUT_NAME\""
