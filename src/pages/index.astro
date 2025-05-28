@@ -1,8 +1,11 @@
 ---
+import videoPoster from '@/assets/images/Anybody-Paddlesports-Sample-Video-poster.png';
+import tualatinRiver from '@/assets/images/Tualatin-RIver-Tualatin-Community-Park.jpg';
 import Hero from '@/components/Hero.astro';
 import Icon from '@/components/Icon.astro';
 import Layout from '@/components/Layout.astro';
 import { SITE_CONFIG } from '@/config/site';
+import { Image } from 'astro:assets';
 ---
 
 <Layout
@@ -149,10 +152,14 @@ import { SITE_CONFIG } from '@/config/site';
         </div>
 
         <div class="relative">
-          <img
-            src="/Tualatin-RIver-Tualatin-Community-Park.jpg"
+          <Image
+            src={tualatinRiver}
             alt="Beautiful paddle boarding location with calm waters"
             class="rounded-lg shadow-lg w-full h-80 object-cover"
+            width={800}
+            height={320}
+            format="webp"
+            quality={85}
           />
           <div
             class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg">
@@ -177,7 +184,7 @@ import { SITE_CONFIG } from '@/config/site';
       <div class="relative rounded-lg overflow-hidden shadow-2xl">
         <video
           controls
-          poster="/Anybody-Paddlesports-Sample-Video-poster.png"
+          poster={videoPoster.src}
           class="w-full h-auto"
           preload="metadata">
           <source

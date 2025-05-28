@@ -1,6 +1,8 @@
 ---
 import { SITE_CONFIG } from '@/config/site';
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
+import logo from '@/assets/images/Logo-Horizontal-Light-768x213.png';
 
 // Get current path for active navigation highlighting
 const currentPath = Astro.url.pathname;
@@ -12,10 +14,14 @@ const currentPath = Astro.url.pathname;
     <div class="flex justify-between items-center h-16">
       <div class="flex-shrink-0">
         <a href="/" class="block">
-          <img
-            src="/Logo-Horizontal-Light-768x213.png"
+          <Image
+            src={logo}
             alt={SITE_CONFIG.name}
             class="h-10 w-auto"
+            width={768}
+            height={213}
+            loading="eager"
+            format="webp"
           />
         </a>
       </div>

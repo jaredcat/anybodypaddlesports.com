@@ -1,7 +1,11 @@
 ---
+import silvertonReservoir from '@/assets/images/G0062626-scaled.jpg';
+import estacadaImage from '@/assets/images/IMG_20200907_095633.jpg';
+import tualatinRiver from '@/assets/images/Tualatin-RIver-Tualatin-Community-Park.jpg';
 import Hero from '@/components/Hero.astro';
 import Layout from '@/components/Layout.astro';
 import { SITE_CONFIG } from '@/config/site';
+import { Image } from 'astro:assets';
 ---
 
 <Layout
@@ -12,7 +16,7 @@ import { SITE_CONFIG } from '@/config/site';
     title="Places To Go"
     description="Explore our favorite paddle boarding destinations with calm waters perfect for beginners and scenic routes for adventure seekers"
     iconName="map-pin"
-    backgroundImage="/IMG_20200907_095633.jpg"
+    backgroundImage={estacadaImage}
   />
 
   <!-- Interactive Map Section -->
@@ -63,10 +67,14 @@ import { SITE_CONFIG } from '@/config/site';
         <div
           class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
           <div class="h-64 overflow-hidden">
-            <img
-              src="/Tualatin-RIver-Tualatin-Community-Park.jpg"
+            <Image
+              src={tualatinRiver}
               alt="Tualatin Community Park - Calm water perfect for paddle boarding"
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              width={600}
+              height={400}
+              format="webp"
+              quality={85}
             />
           </div>
           <div class="p-6">
@@ -89,10 +97,14 @@ import { SITE_CONFIG } from '@/config/site';
         <div
           class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
           <div class="h-64 overflow-hidden">
-            <img
-              src="/G0062626-scaled.jpg"
+            <Image
+              src={silvertonReservoir}
               alt="Silverton Reservoir - Wide body of calm water surrounded by green scenery"
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              width={600}
+              height={400}
+              format="webp"
+              quality={85}
             />
           </div>
           <div class="p-6">
@@ -114,10 +126,14 @@ import { SITE_CONFIG } from '@/config/site';
         <div
           class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
           <div class="h-64 overflow-hidden">
-            <img
-              src="/IMG_20200907_095633.jpg"
+            <Image
+              src={estacadaImage}
               alt="North Fork Estacada Reservoir - Mountain location with refreshing paddle boarding"
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              width={600}
+              height={400}
+              format="webp"
+              quality={85}
             />
           </div>
           <div class="p-6">
