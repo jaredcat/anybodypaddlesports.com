@@ -1,5 +1,4 @@
 ---
-import videoPoster from '@/assets/images/Anybody-Paddlesports-Sample-Video-poster.png';
 import logo from '@/assets/images/Logo-Horizontal-Light-768x213.png';
 import tualatinRiver from '@/assets/images/Tualatin-RIver-Tualatin-Community-Park.jpg';
 import '@/styles/global.css';
@@ -48,7 +47,7 @@ const optimizedLogo = await getImage({
   width: 768,
   height: 213,
 });
-let optimizedTualatin, optimizedPoster;
+let optimizedTualatin;
 
 if (Astro.url.pathname === '/') {
   optimizedTualatin = await getImage({
@@ -57,13 +56,6 @@ if (Astro.url.pathname === '/') {
     width: 800,
     height: 320,
     quality: 85,
-  });
-  optimizedPoster = await getImage({
-    src: videoPoster,
-    format: 'webp',
-    width: 1920,
-    height: 1080,
-    quality: 80,
   });
 }
 
@@ -239,6 +231,7 @@ const structuredData = generateStructuredData();
             href="/paddleboard-loop-720p.mp4"
             type="video/mp4"
             media="(max-width: 768px)"
+            crossorigin="anonymous"
           />
           <link
             rel="preload"
@@ -246,9 +239,9 @@ const structuredData = generateStructuredData();
             href="/paddleboard-loop-1080p.mp4"
             type="video/mp4"
             media="(min-width: 769px)"
+            crossorigin="anonymous"
           />
           <link rel="preload" as="image" href={optimizedTualatin?.src} />
-          <link rel="preload" as="image" href={optimizedPoster?.src} />
         </>
       )
     }
@@ -412,24 +405,30 @@ const structuredData = generateStructuredData();
             }
           }).observe({ type: 'first-input', buffered: true });
 
-          // Track CLS (Cumulative Layout Shift)
-          let clsValue = 0;
-          new PerformanceObserver((entryList) => {
-            for (const entry of entryList.getEntries()) {
-              const clsEntry = entry as any;
-              if (!clsEntry.hadRecentInput) {
-                clsValue += clsEntry.value;
-                console.log('CLS:', clsValue);
+          // Track CLS (Cumulative Layout Shift) - only if supported
+          if (
+            'PerformanceObserver' in window &&
+            PerformanceObserver.supportedEntryTypes &&
+            PerformanceObserver.supportedEntryTypes.includes('layout-shift')
+          ) {
+            let clsValue = 0;
+            new PerformanceObserver((entryList) => {
+              for (const entry of entryList.getEntries()) {
+                const clsEntry = entry as any;
+                if (!clsEntry.hadRecentInput) {
+                  clsValue += clsEntry.value;
+                  console.log('CLS:', clsValue);
+                }
               }
-            }
-          }).observe({ type: 'layout-shift', buffered: true });
+            }).observe({ type: 'layout-shift', buffered: true });
+          }
         } catch (e) {
           // Gracefully handle unsupported browsers
           console.log('Web Vitals not supported');
         }
       }
 
-      // Run after page load
+      // Initialize tracking when DOM is loaded
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', trackWebVitals);
       } else {

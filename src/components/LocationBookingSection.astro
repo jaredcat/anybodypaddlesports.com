@@ -20,11 +20,25 @@ const { location, eventTypes } = Astro.props;
     {
       eventTypes.map((event) => (
         <button
-          class={`w-full ${event.type === 'primary' ? 'btn-primary' : 'btn-secondary'} cal-booking-btn`}
+          class={`w-full ${event.type === 'primary' ? 'btn-primary' : 'btn-secondary'} cal-booking-btn relative group`}
           data-cal-link={event.calLink}
           data-cal-config='{"layout":"month_view"}'
           type="button">
-          {event.name}
+          <span class="flex items-center justify-between">
+            <span>{event.name}</span>
+            <svg
+              class="w-4 h-4 opacity-60 group-hover:opacity-80 transition-opacity cal-external-icon hidden"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+          </span>
         </button>
       ))
     }
@@ -35,9 +49,33 @@ const { location, eventTypes } = Astro.props;
   // Handle Cal.com booking button clicks
   document.addEventListener('DOMContentLoaded', function () {
     let calReady = false;
+    let calInitialized = false;
 
-    // Check if Cal is already available
-    if (typeof (window as any).Cal !== 'undefined') {
+    // Check if Cal is already available and functional
+    function isCalAvailable() {
+      try {
+        return (
+          typeof (window as any).Cal !== 'undefined' &&
+          typeof (window as any).Cal === 'function' &&
+          (window as any).Cal.ns &&
+          typeof (window as any).Cal.ns === 'object'
+        );
+      } catch (error) {
+        return false;
+      }
+    }
+
+    // Show external link icons when using fallback
+    function showFallbackMode() {
+      const externalIcons = document.querySelectorAll('.cal-external-icon');
+      externalIcons.forEach((icon) => {
+        icon.classList.remove('hidden');
+      });
+      console.log('📍 Booking buttons will open Cal.com in new tabs');
+    }
+
+    // Initial check
+    if (isCalAvailable()) {
       calReady = true;
     }
 
@@ -45,6 +83,17 @@ const { location, eventTypes } = Astro.props;
     window.addEventListener('cal-ready', function () {
       calReady = true;
       console.log('Cal.com is now ready for booking buttons');
+      if (!calInitialized) {
+        initializeCalButtons();
+        calInitialized = true;
+      }
+    });
+
+    // Listen for Cal error event
+    window.addEventListener('cal-error', function () {
+      console.warn('Cal.com embed failed to load, will use fallback links');
+      calReady = false;
+      showFallbackMode();
     });
 
     // Initialize booking buttons
@@ -66,14 +115,20 @@ const { location, eventTypes } = Astro.props;
           if (calLink) {
             console.log('Booking button clicked:', calLink);
 
-            // Check if Cal.com is available
-            if (calReady && typeof (window as any).Cal !== 'undefined') {
-              console.log('Opening Cal.com modal');
-              // Use Cal.com embed API
-              (window as any).Cal('openModal', {
-                calLink: calLink,
-                config: calConfig ? JSON.parse(calConfig) : {},
-              });
+            // Check if Cal.com is available and functional
+            if (calReady && isCalAvailable()) {
+              try {
+                console.log('Opening Cal.com modal');
+                // Use Cal.com embed API
+                (window as any).Cal('openModal', {
+                  calLink: calLink,
+                  config: calConfig ? JSON.parse(calConfig) : {},
+                });
+              } catch (error) {
+                console.warn('Failed to open Cal.com modal:', error);
+                // Fallback to new tab
+                window.open(`https://cal.com/${calLink}`, '_blank');
+              }
             } else {
               // Fallback: open Cal.com in new tab
               console.log('Cal.com embed not available, opening in new tab');
@@ -84,10 +139,24 @@ const { location, eventTypes } = Astro.props;
       });
     }
 
-    // Initialize immediately
-    initializeCalButtons();
+    // Initialize immediately if Cal is already ready
+    if (calReady) {
+      initializeCalButtons();
+      calInitialized = true;
+    }
 
-    // Re-initialize when Cal becomes ready
-    window.addEventListener('cal-ready', initializeCalButtons);
+    // Initialize buttons even if Cal.com isn't ready (for fallback behavior)
+    if (!calInitialized) {
+      initializeCalButtons();
+      calInitialized = true;
+    }
+
+    // Show fallback mode immediately if we're in development
+    const isDevelopment =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+    if (isDevelopment) {
+      setTimeout(showFallbackMode, 100);
+    }
   });
 </script>
