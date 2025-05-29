@@ -28,8 +28,16 @@ const sizeClasses = {
 // Get the SVG content (build-time resolved, zero runtime overhead)
 const iconSvg = icons[name];
 const classes = `${sizeClasses[size]} ${className}`;
+
+// Check if responsive classes are provided (contains w- or h- classes)
+const hasResponsiveClasses =
+  className.includes('w-') || className.includes('h-');
+
+// Only apply fixed hero sizing if no responsive classes are provided
 const style =
-  size === 'hero' ? `width: 200px; height: 200px; ${styleProp}` : styleProp;
+  size === 'hero' && !hasResponsiveClasses
+    ? `width: 200px; height: 200px; ${styleProp}`
+    : styleProp;
 ---
 
 <div class={classes} style={style} set:html={iconSvg} />

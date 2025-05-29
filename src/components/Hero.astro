@@ -94,11 +94,27 @@ if (backgroundImage) {
     </svg>
   </div>
 
-  <div class="relative container-custom py-12 pb-16 lg:py-16 lg:pb-24 z-20 w-full">
+  <div class="relative container-custom py-12 lg:py-16 pb-24 z-20 w-full">
     {iconName ? (
       <!-- Two-column layout with icon on right -->
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div class="text-center lg:text-left">
+      <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <!-- Icon - shows first on mobile, second on desktop -->
+        <div class="order-1 lg:order-2 flex justify-center lg:justify-end">
+          <div class={`bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white border-opacity-30 ${
+            isMainLogo
+              ? 'w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96'
+              : 'w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 xl:w-72 xl:h-72'
+          }`}>
+              <Icon name={iconName} size="hero" class={`text-white drop-shadow-lg ${
+                isMainLogo
+                  ? 'w-36 h-36 sm:w-40 sm:h-40 md:w-52 md:h-52 lg:w-60 lg:h-60 xl:w-72 xl:h-72'
+                  : 'w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 xl:w-52 xl:h-52'
+              }`} />
+          </div>
+        </div>
+
+        <!-- Text content - shows second on mobile, first on desktop -->
+        <div class="order-2 lg:order-1 text-center lg:text-left">
           <h1 class="text-4xl text-white md:text-6xl font-bold mb-6">
             {title}
             {subtitle && (
@@ -117,12 +133,6 @@ if (backgroundImage) {
               {ctaText}
             </a>
           )}
-        </div>
-
-        <div class="flex justify-center lg:justify-end">
-          <div class="bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white border-opacity-30" style={isMainLogo ? 'width: 400px; height: 400px;' : 'width: 300px; height: 300px;'}>
-              <Icon name={iconName} size="hero" class="text-white drop-shadow-lg" style={isMainLogo ? 'width: 300px; height: 300px;' : ''} />
-          </div>
         </div>
       </div>
     ) : (
