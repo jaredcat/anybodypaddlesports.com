@@ -263,265 +263,57 @@ const rentalLocations = activeLocations
     </div>
   </section>
 
-  <!-- Cal.com embed script with optimized loading -->
+  <!-- Application-specific booking logic -->
   <script>
-    // Optimized Cal.com loading - only load when user interacts with booking buttons
-    let calScriptLoaded = false;
-    let calScriptLoading = false;
-    let calAvailable = false;
+    import { calEmbedManager } from '@/scripts/cal-embed';
 
-    // Check if we're in development or if we should skip embed
-    const isDevelopment =
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1';
-    const skipEmbed =
-      isDevelopment || localStorage.getItem('cal-embed-disabled') === 'true';
-
-    function waitForCal(
-      maxAttempts = 10,
-      attemptInterval = 300,
-    ): Promise<void> {
-      return new Promise<void>((resolve, reject) => {
-        let attempts = 0;
-
-        const checkCal = () => {
-          attempts++;
-
-          // Check if Cal exists and has the required methods
-          if (
-            typeof (window as any).Cal !== 'undefined' &&
-            typeof (window as any).Cal === 'function'
-          ) {
-            try {
-              // Test if Cal actually works by checking its methods
-              if (
-                (window as any).Cal.ns &&
-                typeof (window as any).Cal.ns === 'object'
-              ) {
-                console.log('Cal.com API ready and functional');
-                calAvailable = true;
-                window.dispatchEvent(new CustomEvent('cal-ready'));
-                resolve();
-                return;
-              }
-            } catch (testError) {
-              console.warn(
-                'Cal object exists but is not functional:',
-                testError,
-              );
-            }
-          }
-
-          if (attempts >= maxAttempts) {
-            const error = new Error(
-              `Cal.com API not available after ${maxAttempts} attempts (${maxAttempts * attemptInterval}ms)`,
-            );
-            console.warn(error.message);
-            if (isDevelopment) {
-              console.info(
-                "💡 Tip: Cal.com embeds often don't work in development. This is normal and will work in production.",
-              );
-            }
-            calAvailable = false;
-            window.dispatchEvent(new CustomEvent('cal-error'));
-            reject(error);
-          } else {
-            setTimeout(checkCal, attemptInterval);
-          }
-        };
-
-        checkCal();
-      });
-    }
-
-    function loadCalScript(): Promise<void> {
-      // Skip embed loading if disabled or in development
-      if (skipEmbed) {
-        console.log(
-          'Cal.com embed disabled (development mode or manual override)',
-        );
-        window.dispatchEvent(new CustomEvent('cal-error'));
-        return Promise.reject(new Error('Cal.com embed disabled'));
-      }
-
-      if (calAvailable) {
-        // If Cal is already available and working, return immediately
-        return Promise.resolve();
-      }
-
-      if (calScriptLoaded) {
-        // If script is loaded but Cal isn't available, wait for it
-        return waitForCal();
-      }
-
-      if (calScriptLoading) {
-        // If currently loading, wait for it to complete
-        return new Promise<void>((resolve, reject) => {
-          const checkLoading = () => {
-            if (calAvailable) {
-              resolve();
-            } else if (calScriptLoaded) {
-              waitForCal().then(resolve).catch(reject);
-            } else if (!calScriptLoading) {
-              reject(new Error('Cal.com script loading failed'));
-            } else {
-              setTimeout(checkLoading, 100);
-            }
-          };
-          checkLoading();
-        });
-      }
-
-      calScriptLoading = true;
-
-      return new Promise<void>((resolve, reject) => {
-        // Add error listener for script errors
-        const originalOnError = window.onerror;
-        let scriptErrorOccurred = false;
-
-        window.onerror = function (message, source, lineno, colno, error) {
-          if (source && source.includes('cal.com/embed/embed.js')) {
-            console.warn('Cal.com script error detected:', message);
-            scriptErrorOccurred = true;
-          }
-          if (originalOnError) {
-            return originalOnError(message, source, lineno, colno, error);
-          }
-          return false;
-        };
-
-        const script = document.createElement('script');
-        script.src = 'https://app.cal.com/embed/embed.js';
-        script.async = true;
-
-        script.onload = function () {
-          calScriptLoaded = true;
-          calScriptLoading = false;
-          console.log('Cal.com embed script loaded');
-
-          // Restore original error handler
-          window.onerror = originalOnError;
-
-          // Check if there were script errors
-          if (scriptErrorOccurred) {
-            console.warn('Cal.com script loaded but had internal errors');
-            calAvailable = false;
-            window.dispatchEvent(new CustomEvent('cal-error'));
-            reject(new Error('Cal.com script had internal errors'));
-            return;
-          }
-
-          // Wait for Cal API to be available with better error handling
-          waitForCal()
-            .then(resolve)
-            .catch((error) => {
-              console.warn('Cal.com API failed to initialize:', error);
-              reject(error);
-            });
-        };
-
-        script.onerror = function () {
-          calScriptLoading = false;
-          window.onerror = originalOnError;
-          const error = new Error('Failed to load Cal.com embed script');
-          console.warn(error.message);
-          window.dispatchEvent(new CustomEvent('cal-error'));
-          reject(error);
-        };
-
-        // Set a timeout for the entire loading process (reduced to 5 seconds)
-        setTimeout(() => {
-          if (!calAvailable && calScriptLoading) {
-            console.warn('Cal.com script loading timeout');
-            calScriptLoading = false;
-            window.onerror = originalOnError;
-            window.dispatchEvent(new CustomEvent('cal-error'));
-            reject(new Error('Cal.com script loading timeout'));
-          }
-        }, 5000); // 5 second timeout
-
-        document.head.appendChild(script);
-      });
-    }
-
-    // Load Cal.com script on first user interaction with booking buttons
+    // Initialize booking functionality when DOM is ready
     document.addEventListener('DOMContentLoaded', function () {
       const bookingButtons = document.querySelectorAll(
-        '.cal-booking-btn, [href="/book"]',
-      );
+        '.cal-booking-btn',
+      ) as NodeListOf<HTMLElement>;
 
-      // Add development notice if in development mode
-      if (isDevelopment) {
-        console.info(
-          '🚀 Development Mode: Cal.com embeds will use fallback links. This is normal and will work in production.',
-        );
-      }
+      console.log(`Found ${bookingButtons.length} booking buttons`);
 
-      // Use intersection observer to preload when booking section is visible
-      if ('IntersectionObserver' in window && !skipEmbed) {
+      // Setup each booking button with Cal.com integration
+      bookingButtons.forEach((button) => {
+        calEmbedManager.setupBookingButton(button);
+      });
+
+      // Performance optimization: preload Cal.com when booking section becomes visible
+      if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                console.log('Booking section visible, preloading Cal.com...');
-                loadCalScript().catch((error) => {
-                  console.warn('Failed to preload Cal.com script:', error);
-                });
+                console.log('Booking section visible, initializing Cal.com...');
+
+                // Initialize Cal.com embed system
+                calEmbedManager.initialize();
+
+                // Preload all visible booking namespaces
+                const visibleButtons = entry.target.querySelectorAll(
+                  '.cal-booking-btn',
+                ) as NodeListOf<HTMLElement>;
+                const calLinks = Array.from(visibleButtons)
+                  .map((btn) => btn.getAttribute('data-cal-link'))
+                  .filter(Boolean) as string[];
+
+                calEmbedManager.preloadNamespaces(calLinks);
+
                 observer.disconnect();
               }
             });
           },
-          { rootMargin: '50px' },
+          { rootMargin: '100px' },
         );
 
-        bookingButtons.forEach((btn) => observer.observe(btn));
+        // Observe the booking section
+        const bookingSection = document.querySelector('section');
+        if (bookingSection) {
+          observer.observe(bookingSection);
+        }
       }
-
-      // Fallback: load on first interaction (only if not skipped)
-      bookingButtons.forEach((btn) => {
-        const loadOnInteraction = () => {
-          if (!skipEmbed) {
-            console.log('User interaction detected, loading Cal.com...');
-            loadCalScript().catch((error) => {
-              console.warn(
-                'Failed to load Cal.com script on interaction:',
-                error,
-              );
-            });
-          }
-        };
-
-        btn.addEventListener('mouseenter', loadOnInteraction, { once: true });
-        btn.addEventListener('focus', loadOnInteraction, { once: true });
-        btn.addEventListener('click', loadOnInteraction, { once: true });
-      });
     });
-
-    // Add developer controls to localStorage
-    if (isDevelopment) {
-      // Expose helper functions for development
-      (window as any).calDebug = {
-        enableEmbed: () => {
-          localStorage.removeItem('cal-embed-disabled');
-          console.log('Cal.com embed enabled - reload page to take effect');
-        },
-        disableEmbed: () => {
-          localStorage.setItem('cal-embed-disabled', 'true');
-          console.log('Cal.com embed disabled - reload page to take effect');
-        },
-        status: () => {
-          console.log('Cal.com embed status:', {
-            isDevelopment,
-            skipEmbed,
-            calAvailable,
-            calScriptLoaded,
-            calScriptLoading,
-          });
-        },
-      };
-      console.log(
-        '🛠️  Development tools available: window.calDebug.enableEmbed(), window.calDebug.disableEmbed(), window.calDebug.status()',
-      );
-    }
   </script>
 </Layout>
