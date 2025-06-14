@@ -37,16 +37,6 @@ export const LOCATIONS: Location[] = [
     description: 'Urban waterways and beach access',
     active: true,
   },
-  // Add new locations here:
-  // {
-  //   id: 'naples',
-  //   name: 'Naples',
-  //   displayName: 'Naples',
-  //   slug: 'naples',
-  //   address: 'Naples, FL',
-  //   description: 'Calm waters and wildlife viewing',
-  //   active: false, // Set to true when ready to launch
-  // },
 ];
 
 // Helper functions
